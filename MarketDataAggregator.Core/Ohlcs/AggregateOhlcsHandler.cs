@@ -1,9 +1,5 @@
-﻿using MarketDataAggregator.Core.Ohlcs.Aggregates;
-using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models.Entities.Events;
-using MarketDataAggregator.Models.Ohlcs.Aggregates;
+﻿using MarketDataAggregator.Models.Ohlcs.Aggregates;
 using MediatR;
-using System.Text.Json;
 
 namespace MarketDataAggregator.Core.Ohlcs;
 

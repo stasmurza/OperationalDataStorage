@@ -1,7 +1,7 @@
-﻿using MarketDataAggregator.Core.Ohlcs.Aggregates.Extensions;
+﻿using MarketDataAggregator.Core.Ohlcs.Extensions;
 using MarketDataAggregator.Models.Ohlcs;
 
-namespace MarketDataAggregator.Core.Ohlcs.Converters;
+namespace MarketDataAggregator.Core.Ohlcs;
 
 public static class ModelConverter
 {

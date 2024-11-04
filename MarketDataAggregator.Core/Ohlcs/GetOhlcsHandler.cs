@@ -1,4 +1,4 @@
-﻿using MarketDataAggregator.Core.Ohlcs.Aggregates.Extensions;
+﻿using MarketDataAggregator.Core.Ohlcs.Extensions;
 using MarketDataAggregator.Core.Repositories.Abstractions;
 using MarketDataAggregator.Models.Entities.Ohlcs;
 using MarketDataAggregator.Models.Ohlcs;

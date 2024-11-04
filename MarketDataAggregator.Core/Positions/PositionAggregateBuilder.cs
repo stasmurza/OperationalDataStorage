@@ -1,25 +1,34 @@
-﻿using DnsClient.Internal;
-using MarketDataAggregator.Core.Ohlcs.Aggregates.Extensions;
+﻿using MarketDataAggregator.Core.Ohlcs.Aggregates;
 using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models;
 using MarketDataAggregator.Models.Entities.Events;
 using MarketDataAggregator.Models.Entities.Ohlcs;
-using MarketDataAggregator.Models.Ohlcs;
 using MarketDataAggregator.Models.Ohlcs.Aggregates;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace MarketDataAggregator.Core.Ohlcs.Aggregates;
+namespace MarketDataAggregator.Core.Positions;
 
-public class OhlcAggregateBuilder(ILogger<OhlcAggregateBuilder> logger, IContext context, IRepository<Ohlc> ohlcRepository, IRepository<Event> eventRepository)
+public class PositionAggregateBuilder
 {
     public event EventHandler<AggregateUpdatedEventArgs>? AggregateUpdated;
 
-    private readonly ILogger<OhlcAggregateBuilder> logger = logger;
-    private readonly IContext context = context;
-    private readonly IRepository<Ohlc> ohlcRepository = ohlcRepository;
-    private readonly IRepository<Event> eventRepository = eventRepository;
-    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(initialCount: 1);
+    private readonly ILogger<PositionAggregateBuilder> logger;
+    private readonly IContext context;
+    private readonly IRepository<Ohlc> ohlcRepository;
+    private readonly IRepository<Event> eventRepository;
+    private readonly SemaphoreSlim semaphore = new(initialCount: 1, maxCount: 1);
+
+    public PositionAggregateBuilder(
+        ILogger<PositionAggregateBuilder> logger,
+        IContext context,
+        IRepository<Ohlc> ohlcRepository,
+        IRepository<Event> eventRepository)
+    {
+        this.logger = logger;
+        this.context = context;
+        this.ohlcRepository = ohlcRepository;
+        this.eventRepository = eventRepository;
+    }
 
     public async Task ProcessAsync()
     {

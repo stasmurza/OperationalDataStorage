@@ -15,4 +15,8 @@
     <ProjectReference Include="..\MarketDataAggregator.Models\MarketDataAggregator.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,7 @@
 ﻿using MarketDataAggregator.Models.Entities.Ohlcs;
 using MarketDataAggregator.Models.Ohlcs;
 
-namespace MarketDataAggregator.Core.Ohlcs.Aggregates.Extensions;
+namespace MarketDataAggregator.Core.Ohlcs.Extensions;
 
 public static class OhlcExtensions
 {

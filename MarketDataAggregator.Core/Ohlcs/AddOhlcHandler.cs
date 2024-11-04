@@ -1,5 +1,4 @@
-﻿using MarketDataAggregator.Core.Ohlcs.Converters;
-using MarketDataAggregator.Core.Repositories.Abstractions;
+﻿using MarketDataAggregator.Core.Repositories.Abstractions;
 using MarketDataAggregator.Models.Entities.Events;
 using MarketDataAggregator.Models.Ohlcs;
 using MediatR;

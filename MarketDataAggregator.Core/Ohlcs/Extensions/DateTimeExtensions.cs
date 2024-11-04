@@ -1,7 +1,7 @@
 ﻿using MarketDataAggregator.Models;
 using Microsoft.VisualBasic;
 
-namespace MarketDataAggregator.Core.Ohlcs.Aggregates.Extensions;
+namespace MarketDataAggregator.Core.Ohlcs.Extensions;
 
 public static class DateTimeExtensions
 {

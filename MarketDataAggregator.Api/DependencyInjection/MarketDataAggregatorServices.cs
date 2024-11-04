@@ -1,6 +1,5 @@
 ﻿using MarketDataAggregator.Api.HostedServices;
 using MarketDataAggregator.Core.Ohlcs;
-using MarketDataAggregator.Core.Ohlcs.Aggregates;
 using MarketDataAggregator.Core.Repositories.Abstractions;
 using MarketDataAggregator.Data;
 using MarketDataAggregator.Data.Repositories;
@@ -13,14 +12,14 @@ namespace MarketDataAggregator.Api.DependencyInjection;
 /// <summary>
 /// Core layer injection.
 /// </summary>
-public static class HistoricalDataServices
+public static class MarketDataAggregatorServices
 {
     /// <summary>
     /// Add core layer services.
     /// </summary>
     /// <param name="services"></param>
     /// <returns><see cref="IServiceCollection"/></returns>
-    public static IServiceCollection AddHistoricalDataServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMarketDataAggregatorServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetOhlcsHandler).Assembly));
         services.AddAutoMapperService();
