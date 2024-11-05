@@ -20,7 +20,7 @@ public class MarketDataController(IMediator mediator, IMapper mapper) : Controll
         var output = await mediator.Send(input);
         return new GetOhlcsResponse
         {
-            HistoricalExchangeRates = output.HistoricalExchangeRates.Select(mapper.Map<Contracts.Ohlcs.OhlcDto>)
+            Ohlcs = output.Ohlcs.Select(mapper.Map<Contracts.Ohlcs.OhlcDto>)
         };
     }
 

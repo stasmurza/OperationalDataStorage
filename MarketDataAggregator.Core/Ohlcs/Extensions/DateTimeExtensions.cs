@@ -1,4 +1,4 @@
-﻿using MarketDataAggregator.Models;
+﻿using MarketDataAggregator.Models.Ohlcs;
 using Microsoft.VisualBasic;
 
 namespace MarketDataAggregator.Core.Ohlcs.Extensions;

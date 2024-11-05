@@ -5,11 +5,11 @@ using MediatR;
 
 namespace MarketDataAggregator.Core.Events;
 
-public class AddEventHandler(IRepository<Event> eventRepository) : IRequestHandler<AddEventInput>
+public class NewEventsHandler(IRepository<Event> eventRepository) : IRequestHandler<NewEventsInput>
 {
     private readonly IRepository<Event> eventRepository = eventRepository;
 
-    public async Task Handle(AddEventInput input, CancellationToken cancellationToken)
+    public async Task Handle(NewEventsInput input, CancellationToken cancellationToken)
     {
         var eventObject = new Event
         {

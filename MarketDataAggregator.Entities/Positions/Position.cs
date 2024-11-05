@@ -1,13 +1,9 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using MarketDataAggregator.Models.Entities.Abstractions;
+﻿using MarketDataAggregator.Entities.Abstractions;
 
-namespace MarketDataAggregator.Models.OwnTrades;
+namespace MarketDataAggregator.Entities.Positions;
 
-public class OwnTrade : IEntity
+public class Position : IEntity
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     public required DateTime DateTime { get; set; }
@@ -16,13 +12,11 @@ public class OwnTrade : IEntity
 
     public required decimal Quantity { get; set; }
 
-    public required decimal Price { get; set; }
+    public required decimal EntryPrice { get; set; }
 
     public required Direction Direction { get; set; }
 
     public required decimal Fee { get; set; }
 
     public required string FeeCurrency { get; set; }
-
-    public required string OrderType { get; set; }
 }

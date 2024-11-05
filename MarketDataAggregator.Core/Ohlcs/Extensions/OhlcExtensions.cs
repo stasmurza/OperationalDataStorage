@@ -1,35 +1,39 @@
-﻿using MarketDataAggregator.Models.Entities.Ohlcs;
+﻿using MarketDataAggregator.Entities.Ohlcs;
 using MarketDataAggregator.Models.Ohlcs;
 
 namespace MarketDataAggregator.Core.Ohlcs.Extensions;
 
 public static class OhlcExtensions
 {
-    public static void Apply(this Ohlc ohlc, OhlcDto historicalExchangeRate)
+    public static void Apply(this Ohlc ohlc, OhlcDto dto)
     {
-        if (ohlc.Symbol != historicalExchangeRate.Symbol) throw new ArgumentOutOfRangeException(nameof(historicalExchangeRate));
-
-        if (historicalExchangeRate.StartTime < ohlc.MinTime)
-        {
-            ohlc.MinTime = historicalExchangeRate.StartTime;
-            ohlc.Open = historicalExchangeRate.Open;
-        };
-
-        if (historicalExchangeRate.StartTime > ohlc.MaxTime)
-        {
-            ohlc.MaxTime = historicalExchangeRate.StartTime;
-            ohlc.Close = historicalExchangeRate.Close;
-            if (historicalExchangeRate.High > ohlc.High) ohlc.High = historicalExchangeRate.High;
-            if (historicalExchangeRate.Low < ohlc.Low) ohlc.Low = historicalExchangeRate.Low;
-            if (historicalExchangeRate.Volume > ohlc.Volume) ohlc.Volume = historicalExchangeRate.Volume;
-        }
+        if (ohlc.Symbol != dto.Symbol) throw new ArgumentOutOfRangeException(nameof(dto));
+        if (dto.EndTime <= ohlc.EndTime) return;
+        
+        ohlc.Open = dto.Open;
+        ohlc.Close = dto.Close;
+        ohlc.High = dto.High;
+        ohlc.Low = dto.Low;
+        ohlc.Volume = dto.Volume;
     }
 
-    public static OhlcDto ToHistoricalExchangeRate(this Ohlc ohlc) => new()
+    public static void Apply(this Ohlc result, Ohlc ohlc)
+    {
+        if (result.Symbol != ohlc.Symbol) throw new ArgumentOutOfRangeException(nameof(ohlc));
+        if (ohlc.EndTime <= result.EndTime) return;
+
+        result.Open = ohlc.Open;
+        result.Close = ohlc.Close;
+        result.High = ohlc.High;
+        result.Low = ohlc.Low;
+        result.Volume = ohlc.Volume;
+    }
+
+    public static OhlcDto ToDto(this Ohlc ohlc) => new()
     {
         StartTime = ohlc.StartTime,
         Symbol = ohlc.Symbol,
-        Interval = ohlc.Interval,
+        Interval = Enum.Parse<Models.Ohlcs.TimeInterval>(ohlc.Interval.ToString()),
         Low = ohlc.Low,
         High = ohlc.High,
         Open = ohlc.Open,

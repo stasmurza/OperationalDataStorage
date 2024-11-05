@@ -4,6 +4,8 @@ public class OhlcDto
 {
     public required DateTime StartTime { get; set; }
 
+    public required DateTime EndTime { get; set; }
+
     public required string Symbol { get; set; }
 
     public TimeInterval Interval { get; set; }

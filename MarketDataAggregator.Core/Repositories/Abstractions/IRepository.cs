@@ -1,4 +1,4 @@
-﻿using MarketDataAggregator.Models.Entities.Abstractions;
+﻿using MarketDataAggregator.Entities.Abstractions;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 

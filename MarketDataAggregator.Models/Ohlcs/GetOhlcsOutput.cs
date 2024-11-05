@@ -2,5 +2,5 @@
 
 public struct GetOhlcsOutput
 {
-    public IEnumerable<OhlcDto> HistoricalExchangeRates { get; set; }
+    public IEnumerable<OhlcDto> Ohlcs { get; set; }
 }

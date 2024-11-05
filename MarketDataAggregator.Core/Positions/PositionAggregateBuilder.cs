@@ -10,8 +10,6 @@ namespace MarketDataAggregator.Core.Positions;
 
 public class PositionAggregateBuilder
 {
-    public event EventHandler<AggregateUpdatedEventArgs>? AggregateUpdated;
-
     private readonly ILogger<PositionAggregateBuilder> logger;
     private readonly IContext context;
     private readonly IRepository<Ohlc> ohlcRepository;

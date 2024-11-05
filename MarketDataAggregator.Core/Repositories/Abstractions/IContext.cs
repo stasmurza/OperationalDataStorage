@@ -15,7 +15,7 @@ public interface IContext
 
     IMongoCollection<Ohlc> Ohlcs { get; }
     
-    IMongoCollection<OwnTrade> OwnTrades { get; }
+    IMongoCollection<OwnTradeDto> OwnTrades { get; }
 
     public IMongoCollection<T> GetCollection<T>(string name);
 }

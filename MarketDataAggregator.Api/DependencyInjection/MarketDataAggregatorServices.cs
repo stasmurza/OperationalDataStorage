@@ -3,9 +3,7 @@ using MarketDataAggregator.Core.Ohlcs;
 using MarketDataAggregator.Core.Repositories.Abstractions;
 using MarketDataAggregator.Data;
 using MarketDataAggregator.Data.Repositories;
-using MarketDataAggregator.Models.Entities.Events;
-using MarketDataAggregator.Models.Entities.Ohlcs;
-using MarketDataAggregator.Models.Options;
+using MarketDataAggregator.Infrastructure.Settings;
 
 namespace MarketDataAggregator.Api.DependencyInjection;
 
@@ -27,9 +25,9 @@ public static class MarketDataAggregatorServices
         services.AddSingleton<IContext, DbContext>();
         services.AddSingleton<IRepository<Event>, EventRepository>();
         services.AddSingleton<IRepository<Ohlc>, OhlcRepository>();
-        services.AddSingleton<OhlcAggregateBuilder>();
-        services.AddSingleton<OhlcAggregateBuilder>();
-        services.AddHostedService<OhlcAggregator>();
+        services.AddSingleton<Core.Ohlcs.OhlcAggregator>();
+        services.AddSingleton<Core.Ohlcs.OhlcAggregator>();
+        services.AddHostedService<HostedServices.OhlcAggregator>();
 
         return services;
     }

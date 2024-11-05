@@ -20,7 +20,7 @@ public class GetOhlcsHandler(IRepository<Ohlc> ohlcRepository) : IRequestHandler
 
         return new GetOhlcsOutput()
         {
-            HistoricalExchangeRates = ohlcs.Select(i => i.ToHistoricalExchangeRate()),
+            Ohlcs = ohlcs.Select(i => i.ToHistoricalExchangeRate()),
         };
     }
 }

@@ -3,4 +3,4 @@ using MarketDataAggregator.Models.OwnTrades;
 
 namespace MarketDataAggregator.Data.Repositories;
 
-public class OwnTradeRepository(IContext dbContext) : Repository<OwnTrade>(dbContext.OwnTrades) {}
+public class OwnTradeRepository(IContext dbContext) : Repository<OwnTradeDto>(dbContext.OwnTrades) {}
