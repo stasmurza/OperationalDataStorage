@@ -1,6 +1,6 @@
 ﻿using MarketDataAggregator.Models.Entities.Events;
 using MarketDataAggregator.Models.Entities.Ohlcs;
-using MarketDataAggregator.Models.OwnTrades;
+using MarketDataAggregator.Models.Positions;
 using MongoDB.Driver;
 
 namespace MarketDataAggregator.Core.Repositories.Abstractions;

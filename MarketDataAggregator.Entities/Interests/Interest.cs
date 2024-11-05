@@ -1,12 +1,14 @@
 ﻿using MarketDataAggregator.Entities.Abstractions;
 
-namespace MarketDataAggregator.Entities.Orders;
+namespace MarketDataAggregator.Entities.Interests;
 
 public class Interest : IEntity
 {
     public string Id { get; set; } = string.Empty;
 
     public required string Symbol { get; set; }
+
+    public required string Strategy { get; set; }
 
     public required decimal Quantity { get; set; }
 

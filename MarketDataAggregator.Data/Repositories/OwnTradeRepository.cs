@@ -1,5 +1,5 @@
 ﻿using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models.OwnTrades;
+using MarketDataAggregator.Models.Positions;
 
 namespace MarketDataAggregator.Data.Repositories;
 

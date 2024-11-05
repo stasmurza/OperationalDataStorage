@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace MarketDataAggregator.Models.OwnTrades;
+namespace MarketDataAggregator.Models.Positions;
 
 public class OwnTradeDto
 {

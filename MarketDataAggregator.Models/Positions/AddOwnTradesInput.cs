@@ -1,4 +1,4 @@
-﻿namespace MarketDataAggregator.Models.OwnTrades;
+﻿namespace MarketDataAggregator.Models.Positions;
 
 public class AddOwnTradesInput
 {

@@ -1,9 +1,9 @@
 ﻿using MarketDataAggregator.Models.Ohlcs;
 using MediatR;
 
-namespace MarketDataAggregator.Models.Orders;
+namespace MarketDataAggregator.Models.Interests;
 
-public class GetInterestInput : IRequest<GetOhlcsOutput>
+public class GetInterestInput : IRequest<GetInterestOutput>
 {
     public required string Strategy { get; set; }
 }

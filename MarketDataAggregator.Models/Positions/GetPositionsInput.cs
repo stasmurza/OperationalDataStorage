@@ -1,6 +1,8 @@
-﻿namespace MarketDataAggregator.Models.Positions;
+﻿using MediatR;
 
-public class GetPositionsInput
+namespace MarketDataAggregator.Models.Positions;
+
+public class GetPositionsInput : IRequest<GetPositionsOutput>
 {
     public required string Strategy { get; set; }
 }

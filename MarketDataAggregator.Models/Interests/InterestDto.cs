@@ -1,4 +1,4 @@
-﻿namespace MarketDataAggregator.Models.Orders;
+﻿namespace MarketDataAggregator.Models.Interests;
 
 public class InterestDto
 {
@@ -6,11 +6,11 @@ public class InterestDto
 
     public required string Symbol { get; set; }
 
+    public required string Strategy { get; set; }
+
     public required decimal Quantity { get; set; }
 
     public required decimal AveragePrice { get; set; }
 
     public required Direction Direction { get; set; }
-
-    public required string Strategy { get; set; }
 }
