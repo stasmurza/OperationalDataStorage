@@ -1,4 +1,4 @@
-﻿namespace MarketDataAggregator.Contracts;
+﻿namespace MarketDataAggregator.Contracts.Ohlcs;
 
 public enum TimeInterval
 {

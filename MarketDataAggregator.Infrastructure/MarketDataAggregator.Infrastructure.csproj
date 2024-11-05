@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarketDataAggregator.Contracts\MarketDataAggregator.Contracts.csproj" />
+    <ProjectReference Include="..\MarketDataAggregator.Models\MarketDataAggregator.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,13 +1,13 @@
-﻿using MarketDataAggregator.Core.Orders.Extensions;
-using MarketDataAggregator.Core.Positions.Extensions;
+﻿using MarketDataAggregator.Core.Positions.Extensions;
 using MarketDataAggregator.Core.Repositories.Abstractions;
 using MarketDataAggregator.Entities.Positions;
 using MarketDataAggregator.Models.Positions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace MarketDataAggregator.Core.Positions;
 
-public class AddOwnTradesHandler
+public class AddOwnTradesHandler : IRequestHandler<AddOwnTradesInput>
 {
     private readonly ILogger<AddOwnTradesHandler> logger;
     private readonly IContext context;

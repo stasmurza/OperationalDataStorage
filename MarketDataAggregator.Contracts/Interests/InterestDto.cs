@@ -1,10 +1,8 @@
-﻿namespace MarketDataAggregator.Models.Positions;
+﻿namespace MarketDataAggregator.Contracts.Interests;
 
-public class PositionDto
+public class InterestDto
 {
     public required string Id { get; set; }
-
-    public required DateTime DateTime { get; set; }
 
     public required string Symbol { get; set; }
 
@@ -12,7 +10,7 @@ public class PositionDto
 
     public required decimal Quantity { get; set; }
 
-    public required decimal EntryPrice { get; set; }
+    public required decimal AveragePrice { get; set; }
 
     public required Direction Direction { get; set; }
 }

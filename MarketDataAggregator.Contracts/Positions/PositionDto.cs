@@ -1,4 +1,4 @@
-﻿namespace MarketDataAggregator.Models.Positions;
+﻿namespace MarketDataAggregator.Contracts.Positions;
 
 public class PositionDto
 {

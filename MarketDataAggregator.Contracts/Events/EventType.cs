@@ -1,7 +1,24 @@
-﻿namespace MarketDataAggregator.Contracts.Events
+﻿namespace MarketDataAggregator.Contracts.Events;
+
+public enum EventType
 {
-    public enum EventType
-    {
-        OhlcReceived,
-    }
+    /// <summary>
+    /// Market order received.
+    /// </summary>
+    MarketOrderReceived,
+
+    /// <summary>
+    /// Ohlc received.
+    /// </summary>
+    OhlcReceived,
+
+    /// <summary>
+    /// Own trade received.
+    /// </summary>
+    OwnTradeReceived,
+
+    /// <summary>
+    /// Trading order received.
+    /// </summary>
+    TradingOrderReceived,
 }

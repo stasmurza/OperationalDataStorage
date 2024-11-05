@@ -1,6 +1,6 @@
 ﻿namespace MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
 
-public class MarketDataSettings
+public class EventsSnapshotSettings
 {
     public required string ExchangeName { get; set; }
 

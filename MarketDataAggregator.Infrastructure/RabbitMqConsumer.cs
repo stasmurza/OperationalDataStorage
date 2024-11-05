@@ -1,12 +1,15 @@
-﻿using EventStore.Infrastructure.Settings;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using EventStore.Models.Events;
-using MarketDataAggregator.Infrastructure;
+using MarketDataAggregator.Infrastructure.Settings.RabbitMq;
+using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
+using MarketDataAggregator.Contracts.Events;
+using MarketDataAggregator.Contracts.Ohlcs;
+using System.Text.Json;
+using MarketDataAggregator.Models.Ohlcs;
 
 namespace EventStore.Infrastructure;
 
@@ -15,7 +18,7 @@ public class RabbitMqConsumer : IDisposable
     private readonly ILogger<RabbitMqConsumer> logger;
     private readonly IMediator mediator;
     private readonly RabbitMqClientSettings rabbitMQClientSettings;
-    private readonly TopologySettingsAggregator topologySettingsAggregator;
+    private readonly EventsSnapshotSettings eventsSnapshotSettings;
     private readonly IConnection connection;
     private readonly IModel channel;
     private bool disposedValue;
@@ -24,20 +27,19 @@ public class RabbitMqConsumer : IDisposable
         ILogger<RabbitMqConsumer> logger,
         IMediator mediator,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
-        TopologySettingsAggregator topologySettingsAggregator)
+        EventsSnapshotSettings eventsSnapshotSettings)
     {
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.HostName);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.UserName);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.Password);
-        ArgumentNullException.ThrowIfNull(topologySettingsAggregator);
+        ArgumentNullException.ThrowIfNull(eventsSnapshotSettings);
         
         this.logger = logger;
         this.mediator = mediator;
-
+        this.eventsSnapshotSettings = eventsSnapshotSettings;
         rabbitMQClientSettings = rabbitMQClientOptions.Value;
-        this.topologySettingsAggregator = topologySettingsAggregator;
 
         var factory = new ConnectionFactory()
         {
@@ -55,16 +57,21 @@ public class RabbitMqConsumer : IDisposable
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
             var routingKey = ea.RoutingKey;
-            var entityId = GetHeader<string>(ea.BasicProperties.Headers, HeadersName.EntityIdName);
-            this.logger.LogInformation($" [x] Received '{routingKey}':'{message}'");
-            var input = new AddEventInput
+
+            var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message);
+            if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
+            if (!eventsSnapshort.Events.Any()) return;
+            var dtosByEventType = eventsSnapshort.Events.GroupBy(e => e.EventType);
+            foreach(var group in dtosByEventType)
             {
-                EventType = EventTypeConvertor.GetEventType(routingKey).ToString(),
-                EntityType = EntityTypeConvertor.GetEntityType(routingKey).ToString(),
-                EntityId = entityId,
-                EventData = message,
-            };
-            mediator.Send(input);
+                if (group.Key == EventType.OhlcReceived.ToString())
+                {
+                    var dtos = group.Select(i => CreateOhlcDto(i.EventData));
+                    var input = new AddOhlcsInput { Dtos = dtos };
+                    mediator.Send(input);
+                }
+            }
+            
         };
 
         foreach (var exchangeName in topologySettingsAggregator.GetExchanges())
@@ -134,5 +141,26 @@ public class RabbitMqConsumer : IDisposable
         var property = value as T ?? throw new InvalidOperationException($"Header {HeadersName.EntityIdName} is not found.");
         
         return property;
+    }
+
+    private MarketDataAggregator.Models.Ohlcs.OhlcDto CreateOhlcDto(string eventData)
+    {
+        var dto = JsonSerializer.Deserialize<MarketDataAggregator.Models.Ohlcs.OhlcDto>(eventData);
+        return dto ?? throw new NullReferenceException(nameof(dto));
+    }
+
+    private void ProcessEvents(EventType eventType, IEnumerable<string> events)
+    {
+        switch (eventType)
+        {
+            case EventType.OhlcReceived:
+            {
+                    var dtos = events.Select(CreateOhlcDto);
+                    var input = new AddOhlcsInput { Dtos = dtos };
+                    mediator.Send(input);
+                }
+                
+
+        }
     }
 }

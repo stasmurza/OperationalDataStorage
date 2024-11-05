@@ -17,6 +17,6 @@ public class ContractsMapping : Profile
         CreateMap<AddOhlcRequest, AddOhlcsInput>();
         CreateMap<GetOhlcsRequest, GetOhlcsInput>();
         CreateMap<Models.Ohlcs.OhlcDto, OhlcDto>();
-        CreateMap<Contracts.TimeInterval, TimeInterval>();
+        CreateMap<Contracts.Ohlcs.TimeInterval, TimeInterval>();
     }
 }

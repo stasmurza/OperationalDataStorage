@@ -7,7 +7,7 @@ public class TopologySettingsAggregator
     public Topology Topology { get; } = new();
 
     public TopologySettingsAggregator(
-        MarketDataSettings marketDataSettings,
+        EventsSnapshotSettings marketDataSettings,
         OwnTradeSettings ownTradeSettings)
     {
         AddTopology(marketDataSettings.ExchangeName, marketDataSettings.QueueName, marketDataSettings.RoutingKeys);
