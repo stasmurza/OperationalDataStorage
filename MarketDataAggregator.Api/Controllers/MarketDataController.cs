@@ -27,7 +27,7 @@ public class MarketDataController(IMediator mediator, IMapper mapper) : Controll
     [HttpPost]
     public async Task PostAsync(AddOhlcRequest request)
     {
-        var input = mapper.Map<AddOhlcInput>(request);
+        var input = mapper.Map<AddOhlcsInput>(request);
         await mediator.Send(input);
     }
 }

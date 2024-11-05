@@ -24,4 +24,6 @@ public class OwnTradeDto
     public required string FeeCurrency { get; set; }
 
     public required string OrderType { get; set; }
+
+    public required string Strategy { get; set; }
 }

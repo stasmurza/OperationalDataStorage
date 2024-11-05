@@ -1,50 +1,60 @@
-﻿using MarketDataAggregator.Core.Ohlcs.Aggregates;
-using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models.Entities.Events;
-using MarketDataAggregator.Models.Entities.Ohlcs;
-using MarketDataAggregator.Models.Ohlcs.Aggregates;
+﻿using MarketDataAggregator.Core.Repositories.Abstractions;
+using MarketDataAggregator.Entities.Ohlcs;
+using MarketDataAggregator.Entities.Positions;
+using MarketDataAggregator.Models.Ohlcs;
+using MarketDataAggregator.Models.OwnTrades;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace MarketDataAggregator.Core.Positions;
 
-public class PositionAggregateBuilder
+public class AddOwnTradesHandler
 {
-    private readonly ILogger<PositionAggregateBuilder> logger;
+    private readonly ILogger<AddOwnTradesHandler> logger;
     private readonly IContext context;
-    private readonly IRepository<Ohlc> ohlcRepository;
-    private readonly IRepository<Event> eventRepository;
+    private readonly IRepository<Position> positionRepository;
     private readonly SemaphoreSlim semaphore = new(initialCount: 1, maxCount: 1);
 
-    public PositionAggregateBuilder(
-        ILogger<PositionAggregateBuilder> logger,
+    public AddOwnTradesHandler(
+        ILogger<AddOwnTradesHandler> logger,
         IContext context,
-        IRepository<Ohlc> ohlcRepository,
-        IRepository<Event> eventRepository)
+        IRepository<Position> positionRepository)
     {
         this.logger = logger;
         this.context = context;
-        this.ohlcRepository = ohlcRepository;
-        this.eventRepository = eventRepository;
+        this.positionRepository = positionRepository;
     }
 
-    public async Task ProcessAsync()
+    public async Task Handle(AddOwnTradesInput input, CancellationToken cancellationToken)
     {
-        try
+        var entity = await positionRepository.FirstOrDefaultAsync(i => i.Symbol == input.StartTime && i.Symbol == input.Symbol && i.Interval == interval);
+        if (entity is null)
         {
-            await semaphore.WaitAsync();
-            await ProcessInternalAsync();
+            entity = Create(input);
+            await ohlcRepository.CreateAsync(entity);
         }
-        catch (Exception exception)
+        else
         {
-            logger.LogError("{errorMessage}", exception.Message);
-            throw;
-        }
-        finally
-        {
-            semaphore.Release();
+            entity.Apply(input);
+            await ohlcRepository.UpdateAsync(entity);
         }
     }
+
+    public async Task AddOwnTrade(OwnTradeDto dto, CancellationToken cancellationToken)
+    {
+        var entity = await positionRepository.FirstOrDefaultAsync(i => i.Symbol == dto.Symbol && i.Strategy == dto.Strategy);
+        if (entity is null)
+        {
+            entity = Create(dto);
+            await positionRepository.CreateAsync(entity);
+        }
+        else
+        {
+            entity.Apply(dto);
+            await ohlcRepository.UpdateAsync(entity);
+        }
+    }
+
 
     private async Task ProcessInternalAsync()
     {
@@ -131,17 +141,12 @@ public class PositionAggregateBuilder
         }
     }
 
-    private static Ohlc Create(OhlcDto historicalExchangeRate, DateTime startTime, TimeInterval interval) => new()
+    private static Position Create(OwnTradeDto dto) => new()
     {
-        Symbol = historicalExchangeRate.Symbol,
-        Interval = interval,
-        MinTime = historicalExchangeRate.StartTime,
-        MaxTime = historicalExchangeRate.StartTime,
-        StartTime = startTime,
-        Low = historicalExchangeRate.Low,
-        High = historicalExchangeRate.High,
-        Open = historicalExchangeRate.Open,
-        Close = historicalExchangeRate.Close,
-        Volume = historicalExchangeRate.Volume,
+        Symbol = dto.Symbol,
+        Strategy = dto.Strategy,
+        Quantity = dto.Quantity,
+        EntryPrice = dto.Price,
+        Direction = Enum.Parse<Entities.Direction>(dto.Direction.ToString()),
     };
 }

@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 
 namespace MarketDataAggregator.Core.Ohlcs;
 
-public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> ohlcRepository) : IRequestHandler<AddOhlcInput>
+public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> ohlcRepository) : IRequestHandler<AddOhlcsInput>
 {
     private readonly ILogger<AddOhlcsHandler> logger = logger;
     private readonly IRepository<Ohlc> ohlcRepository = ohlcRepository;
     private readonly SemaphoreSlim semaphore = new(initialCount: 1);
 
-    public async Task Handle(AddOhlcInput input, CancellationToken cancellationToken)
+    public async Task Handle(AddOhlcsInput input, CancellationToken cancellationToken)
     {
         try
         {

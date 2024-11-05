@@ -29,9 +29,23 @@ public static class OhlcExtensions
         result.Volume = ohlc.Volume;
     }
 
+    public static void Apply(this Ohlc result, AddOhlcInput input)
+    {
+        if (result.Symbol != input.Symbol) throw new ArgumentOutOfRangeException(nameof(input));
+        if (input.EndTime <= result.EndTime) return;
+
+        result.Open = input.Open;
+        result.Close = input.Close;
+        result.High = input.High;
+        result.Low = input.Low;
+        result.Volume = input.Volume;
+    }
+
     public static OhlcDto ToDto(this Ohlc ohlc) => new()
     {
+        Id = ohlc.Id,
         StartTime = ohlc.StartTime,
+        EndTime = ohlc.EndTime,
         Symbol = ohlc.Symbol,
         Interval = Enum.Parse<Models.Ohlcs.TimeInterval>(ohlc.Interval.ToString()),
         Low = ohlc.Low,
