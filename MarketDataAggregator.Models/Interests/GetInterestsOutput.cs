@@ -1,6 +1,6 @@
 ﻿namespace MarketDataAggregator.Models.Interests;
 
-public class GetInterestOutput
+public class GetInterestsOutput
 {
     public required IEnumerable<InterestDto> Interests { get; set; }
 }

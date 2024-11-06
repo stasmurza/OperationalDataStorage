@@ -1,5 +1,5 @@
 ﻿using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models.Entities.Abstractions;
+using MarketDataAggregator.Entities.Abstractions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Expressions;

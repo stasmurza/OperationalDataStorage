@@ -6,15 +6,15 @@ using MediatR;
 
 namespace MarketDataAggregator.Core.Interests;
 
-public class GetInterestHandler(IRepository<Interest> interestRepository) : IRequestHandler<GetInterestInput, GetInterestOutput>
+public class GetInterestsHandler(IRepository<Interest> interestRepository) : IRequestHandler<GetInterestsInput, GetInterestsOutput>
 {
     private readonly IRepository<Interest> interestRepository = interestRepository;
 
-    public async Task<GetInterestOutput> Handle(GetInterestInput input, CancellationToken cancellationToken)
+    public async Task<GetInterestsOutput> Handle(GetInterestsInput input, CancellationToken cancellationToken)
     {
         var interests = await interestRepository.GetAsync(i => i.Strategy == input.Strategy);
 
-        return new GetInterestOutput()
+        return new GetInterestsOutput()
         {
             Interests = interests.Select(i => i.ToDto()),
         };

@@ -1,6 +1,6 @@
 ﻿namespace MarketDataAggregator.Contracts.Interests;
 
-public class GetInterestRequest
+public class GetInterestsRequest
 {
     public required string Strategy { get; set; }
 }

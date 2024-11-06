@@ -1,5 +1,5 @@
 ﻿using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models.Entities.Ohlcs;
+using MarketDataAggregator.Entities.Ohlcs;
 
 namespace MarketDataAggregator.Data.Repositories;
 

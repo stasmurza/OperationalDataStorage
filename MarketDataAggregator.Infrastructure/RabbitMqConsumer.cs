@@ -8,9 +8,7 @@ using MarketDataAggregator.Infrastructure.Settings.RabbitMq;
 using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
 using MarketDataAggregator.Contracts.Events;
 using System.Text.Json;
-using MarketDataAggregator.Models.Ohlcs;
-using MarketDataAggregator.Models.Interests;
-using MarketDataAggregator.Models.Positions;
+using System.Text.Json.Serialization;
 
 namespace EventStore.Infrastructure;
 
@@ -51,25 +49,6 @@ public class RabbitMqConsumer : IDisposable
 
         connection = factory.CreateConnection();
         channel = connection.CreateModel();
-
-        var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
-        {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            var routingKey = ea.RoutingKey;
-
-            var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message);
-            if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
-            if (!eventsSnapshort.Events.Any()) return;
-            var dtosByEventType = eventsSnapshort.Events.GroupBy(e => e.EventType);
-            foreach(var group in dtosByEventType)
-            {
-                ProcessEvents(group.Key, group.Select(i => i.EventData));
-            }
-            
-        };
-
         channel.ExchangeDeclare(eventsSnapshotSettings.ExchangeName, ExchangeType.Direct, durable: false, autoDelete: false);
         channel.QueueDeclare(eventsSnapshotSettings.QueueName, durable: false, autoDelete: false);
         foreach (var bindingKey in this.eventsSnapshotSettings.RoutingKeys)
@@ -80,10 +59,18 @@ public class RabbitMqConsumer : IDisposable
                 routingKey: bindingKey);
         }
 
+        var consumer = CreateConsumer();
         channel.BasicConsume(
             queue: eventsSnapshotSettings.QueueName,
             autoAck: true,
             consumer: consumer);
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 
     protected virtual void Dispose(bool disposing)
@@ -105,18 +92,29 @@ public class RabbitMqConsumer : IDisposable
         }
     }
 
-    // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    ~RabbitMqConsumer()
+    private EventingBasicConsumer CreateConsumer()
     {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: false);
-    }
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new JsonStringEnumConverter());
 
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
+        var consumer = new EventingBasicConsumer(channel);
+        consumer.Received += (model, ea) =>
+        {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            var routingKey = ea.RoutingKey;
+            var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, options);
+            if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
+            if (!eventsSnapshort.Events.Any()) return;
+            var dtosByEventType = eventsSnapshort.Events.GroupBy(e => e.EventType);
+            foreach (var group in dtosByEventType)
+            {
+                ProcessEvents(group.Key, group.Select(i => i.EventData));
+            }
+
+        };
+
+        return consumer;
     }
 
     private void ProcessEvents(EventType eventType, IEnumerable<string> events)
@@ -126,7 +124,7 @@ public class RabbitMqConsumer : IDisposable
             case EventType.MarketOrderReceived:
                 {
                     var dtos = events.Select(Deserialize<MarketDataAggregator.Models.Interests.OrderDto>);
-                    var input = new AddOrdersInput { Dtos = dtos };
+                    var input = new MarketDataAggregator.Models.Interests.AddOrdersInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;
@@ -134,7 +132,7 @@ public class RabbitMqConsumer : IDisposable
             case EventType.OhlcReceived:
                 {
                     var dtos = events.Select(Deserialize<MarketDataAggregator.Models.Ohlcs.OhlcDto>);
-                    var input = new AddOhlcsInput { Dtos = dtos };
+                    var input = new MarketDataAggregator.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;
@@ -142,7 +140,7 @@ public class RabbitMqConsumer : IDisposable
             case EventType.OwnTradeReceived:
                 {
                     var dtos = events.Select(Deserialize<MarketDataAggregator.Models.Positions.OwnTradeDto>);
-                    var input = new AddOwnTradesInput { Dtos = dtos };
+                    var input = new MarketDataAggregator.Models.Positions.AddOwnTradesInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;
@@ -154,9 +152,16 @@ public class RabbitMqConsumer : IDisposable
         }
     }
 
-    private T Deserialize<T>(string eventData)
+    private static T Deserialize<T>(string eventData)
     {
         var dto = JsonSerializer.Deserialize<T>(eventData);
         return dto ?? throw new NullReferenceException(nameof(dto));
+    }
+
+    // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    ~RabbitMqConsumer()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: false);
     }
 }

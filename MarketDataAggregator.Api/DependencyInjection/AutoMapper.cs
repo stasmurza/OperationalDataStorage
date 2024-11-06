@@ -12,7 +12,7 @@ public static class AutoMapper
     /// <returns></returns>
     public static IServiceCollection AddAutoMapperService(this IServiceCollection services)
     {
-        services.AddSingleton<Profile, ContractsMapping>();
+        services.AddSingleton<Profile, ClassesMapping>();
 
         services.AddSingleton(sp => new MapperConfiguration(cfg =>
         {

@@ -8,7 +8,7 @@ namespace MarketDataAggregator.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class MarketDataController(IMediator mediator, IMapper mapper) : ControllerBase
+public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
     private readonly IMapper mapper = mapper;

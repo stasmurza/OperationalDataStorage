@@ -1,9 +1,8 @@
-﻿namespace MarketDataAggregator.Data
+﻿namespace MarketDataAggregator.Data;
+
+public class CollectionNames
 {
-    public class CollectionNames
-    {
-        public const string Events = "Events";
-        public const string Ohlcs = "Ohlcs";
-        public const string OwnTrades = "OwnTrades";
-    }
+    public const string Interests = "Interests";
+    public const string Ohlcs = "Ohlcs";
+    public const string Positions = "Positions";
 }

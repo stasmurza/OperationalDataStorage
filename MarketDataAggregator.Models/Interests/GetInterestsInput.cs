@@ -3,7 +3,7 @@ using MediatR;
 
 namespace MarketDataAggregator.Models.Interests;
 
-public class GetInterestInput : IRequest<GetInterestOutput>
+public class GetInterestsInput : IRequest<GetInterestsOutput>
 {
     public required string Strategy { get; set; }
 }

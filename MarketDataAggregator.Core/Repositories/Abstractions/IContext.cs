@@ -1,4 +1,7 @@
-﻿using MarketDataAggregator.Models.Entities.Events;
+﻿using MarketDataAggregator.Entities.Interests;
+using MarketDataAggregator.Entities.Ohlcs;
+using MarketDataAggregator.Entities.Positions;
+using MarketDataAggregator.Models.Entities.Events;
 using MarketDataAggregator.Models.Entities.Ohlcs;
 using MarketDataAggregator.Models.Positions;
 using MongoDB.Driver;
@@ -11,11 +14,11 @@ public interface IContext
 
     public IMongoClient Client { get; }
 
-    IMongoCollection<Event> Events { get; }
+    IMongoCollection<Interest> Interests { get; }
 
     IMongoCollection<Ohlc> Ohlcs { get; }
     
-    IMongoCollection<OwnTradeDto> OwnTrades { get; }
+    IMongoCollection<Position> Positions { get; }
 
     public IMongoCollection<T> GetCollection<T>(string name);
 }
