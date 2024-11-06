@@ -41,7 +41,8 @@ public class AddOwnTradesHandler : IRequestHandler<AddOwnTradesInput>
         else
         {
             entity.Apply(dto);
-            await positionRepository.UpdateAsync(entity);
+            if (entity.Quantity == 0) await positionRepository.DeleteAsync(entity.Id);
+            else await positionRepository.UpdateAsync(entity);
         }
     }
 

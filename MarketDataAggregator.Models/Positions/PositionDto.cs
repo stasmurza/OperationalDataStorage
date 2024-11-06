@@ -4,8 +4,6 @@ public class PositionDto
 {
     public required string Id { get; set; }
 
-    public required DateTime DateTime { get; set; }
-
     public required string Symbol { get; set; }
 
     public required string Strategy { get; set; }

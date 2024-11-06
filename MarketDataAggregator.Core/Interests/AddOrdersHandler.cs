@@ -2,11 +2,12 @@
 using MarketDataAggregator.Core.Repositories.Abstractions;
 using MarketDataAggregator.Entities.Interests;
 using MarketDataAggregator.Models.Interests;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace MarketDataAggregator.Core.Interests;
 
-public class AddOrdersHandler
+public class AddOrdersHandler : IRequestHandler<AddOrdersInput>
 {
     private readonly ILogger<AddOrdersHandler> logger;
     private readonly IRepository<Interest> interestRepository;
@@ -37,7 +38,8 @@ public class AddOrdersHandler
         else
         {
             entity.Apply(dto);
-            await interestRepository.UpdateAsync(entity);
+            if (entity.Quantity == 0) await interestRepository.DeleteAsync(entity.Id);
+            else await interestRepository.UpdateAsync(entity);
         }
     }
 

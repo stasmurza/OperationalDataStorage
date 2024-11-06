@@ -8,9 +8,9 @@ public class EventDto
 
     public required EventType EventType { get; set; }
 
-    public required EntityType EntityType { get; set; } = string.Empty;
+    public required EntityType EntityType { get; set; }
 
-    public required string EntityId { get; set; } = string.Empty;
+    public required string EntityId { get; set; }
 
-    public required string EventData { get; set; } = string.Empty;
+    public required string EventData { get; set; }
 }

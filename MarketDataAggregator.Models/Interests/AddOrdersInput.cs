@@ -1,6 +1,8 @@
-﻿namespace MarketDataAggregator.Models.Interests;
+﻿using MediatR;
 
-public class AddOrdersInput
+namespace MarketDataAggregator.Models.Interests;
+
+public class AddOrdersInput : IRequest
 {
     public required IEnumerable<OrderDto> Dtos { get; set; }
 }
