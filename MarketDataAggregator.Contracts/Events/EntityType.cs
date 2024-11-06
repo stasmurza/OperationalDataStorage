@@ -2,6 +2,9 @@
 {
     public enum EntityType
     {
-        Ohlc1Minute,
+        Ohlc,
+        OwnTrade,
+        TradingOrder,
+        MarketOrder,
     }
 }
