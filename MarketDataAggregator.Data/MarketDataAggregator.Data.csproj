@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarketDataAggregator.Core\MarketDataAggregator.Core.csproj" />
+    <ProjectReference Include="..\MarketDataAggregator.Infrastructure\MarketDataAggregator.Infrastructure.csproj" />
     <ProjectReference Include="..\MarketDataAggregator.Models\MarketDataAggregator.Models.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
-﻿namespace MarketDataAggregator.Models.Interests;
+﻿namespace MarketDataAggregator.Contracts.Interests;
 
-public class InterestDto
+public class OrderDto
 {
     public required string Id { get; set; }
 
@@ -10,9 +10,7 @@ public class InterestDto
 
     public required decimal Quantity { get; set; }
 
-    public required decimal AveragePrice { get; set; }
+    public required decimal Price { get; set; }
 
     public required Direction Direction { get; set; }
-
-    public required List<OrderDto> Orders { get; set; }
 }

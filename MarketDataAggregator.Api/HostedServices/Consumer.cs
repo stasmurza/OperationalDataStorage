@@ -1,16 +1,11 @@
-﻿using EventStore.Infrastructure;
+﻿using MarketDataAggregator.Infrastructure;
 
 namespace MarketDataAggregator.Api.HostedServices;
 
-public sealed class Consumer : IHostedService, IDisposable
+public sealed class Consumer(RabbitMqConsumer rabbitMqConsumer) : IHostedService, IDisposable
 {
-    private readonly RabbitMqConsumer rabbitMqConsumer;
+    private readonly RabbitMqConsumer rabbitMqConsumer = rabbitMqConsumer;
     private bool disposedValue;
-
-    public Consumer(RabbitMqConsumer rabbitMqConsumer)
-    {
-        this.rabbitMqConsumer = rabbitMqConsumer;
-    }
 
     public Task StartAsync(CancellationToken cancellationToken) =>Task.CompletedTask;
 

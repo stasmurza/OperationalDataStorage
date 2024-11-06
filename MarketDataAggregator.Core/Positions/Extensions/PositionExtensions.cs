@@ -10,6 +10,7 @@ public static class PositionExtensions
     {
         if (position.Symbol != dto.Symbol) throw new ArgumentOutOfRangeException(nameof(dto));
         if (position.Strategy != dto.Strategy) throw new ArgumentOutOfRangeException(nameof(dto));
+        if (position.OwnTrades.Any(i => i.Id == dto.Id)) return;
 
         var positionAmount = position.EntryPrice * position.Quantity;
         var tradeAmount = dto.Price * dto.Quantity;
@@ -26,6 +27,8 @@ public static class PositionExtensions
             position.EntryPrice = entryPrice;
             position.Direction = positionAmount >= tradeAmount ? position.Direction : Enum.Parse<Entities.Direction>(dto.Direction.ToString());
         }
+
+        position.OwnTrades.Add(dto.ToOwnTradeEntity());
     }
 
     public static PositionDto ToDto(this Position position) => new()
@@ -36,5 +39,6 @@ public static class PositionExtensions
         Quantity = position.Quantity,
         EntryPrice = position.EntryPrice,
         Direction = Enum.Parse<Models.Direction>(position.Direction.ToString()),
+        OwnTrades = position.OwnTrades.Select(i => i.ToOwnTradeDto()).ToList()
     };
 }

@@ -1,9 +1,13 @@
 ﻿using MarketDataAggregator.Entities.Abstractions;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace MarketDataAggregator.Entities.Ohlcs;
 
 public class Ohlc : IEntity
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>

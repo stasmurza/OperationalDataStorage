@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 
-
 namespace MarketDataAggregator.Api.Mapping;
 
 /// <summary>
@@ -22,7 +21,9 @@ public class ClassesMapping : Profile
 
         // Models
         CreateMap<Models.Ohlcs.OhlcDto, Contracts.Ohlcs.OhlcDto>();
+        CreateMap<Models.Interests.OrderDto, Contracts.Interests.OrderDto>();
         CreateMap<Models.Interests.InterestDto, Contracts.Interests.InterestDto>();
+        CreateMap<Models.Positions.OwnTradeDto, Contracts.Positions.OwnTradeDto>();
         CreateMap<Models.Positions.PositionDto, Contracts.Positions.PositionDto>();
     }
 }

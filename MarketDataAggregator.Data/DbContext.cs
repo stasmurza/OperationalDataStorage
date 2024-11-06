@@ -1,7 +1,8 @@
 ﻿using MarketDataAggregator.Core.Repositories.Abstractions;
-using MarketDataAggregator.Models.Entities.Events;
-using MarketDataAggregator.Models.Entities.Ohlcs;
-using MarketDataAggregator.Models.Options;
+using MarketDataAggregator.Entities.Interests;
+using MarketDataAggregator.Entities.Ohlcs;
+using MarketDataAggregator.Entities.Positions;
+using MarketDataAggregator.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -9,10 +10,12 @@ namespace MarketDataAggregator.Data;
 
 public class DbContext : IContext, IDisposable
 {
-    public IMongoCollection<Event> Events => Database.GetCollection<Event>(CollectionNames.Events);
+    public IMongoCollection<Interest> Interests => Database.GetCollection<Interest>(CollectionNames.Interests);
     
     public IMongoCollection<Ohlc> Ohlcs => Database.GetCollection<Ohlc>(CollectionNames.Ohlcs);
-    
+
+    public IMongoCollection<Position> Positions => Database.GetCollection<Position>(CollectionNames.Positions);
+
     public IMongoDatabase Database { get; }
 
     public IMongoClient Client { get; }

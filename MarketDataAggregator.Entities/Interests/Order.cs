@@ -1,10 +1,9 @@
-﻿using MarketDataAggregator.Entities.Abstractions;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
 namespace MarketDataAggregator.Entities.Interests;
 
-public class Interest : IEntity
+public class Order
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -16,9 +15,7 @@ public class Interest : IEntity
 
     public required decimal Quantity { get; set; }
 
-    public required decimal AveragePrice { get; set; }
+    public required decimal Price { get; set; }
 
     public required Direction Direction { get; set; }
-
-    public required List<Order> Orders { get; set; }
 }

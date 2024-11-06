@@ -1,4 +1,5 @@
 ﻿using MarketDataAggregator.Entities.Interests;
+using MarketDataAggregator.Entities.Positions;
 using MarketDataAggregator.Models.Interests;
 
 namespace MarketDataAggregator.Core.Interests.Extensions;
@@ -9,6 +10,7 @@ public static class InterestExtensions
     {
         if (interest.Symbol != dto.Symbol) throw new ArgumentOutOfRangeException(nameof(dto));
         if (interest.Strategy != dto.Strategy) throw new ArgumentOutOfRangeException(nameof(dto));
+        if (interest.Orders.Any(i => i.Id == dto.Id)) return;
 
         var positionAmount = interest.AveragePrice * interest.Quantity;
         var tradeAmount = dto.Price * dto.Quantity;
@@ -25,6 +27,8 @@ public static class InterestExtensions
             interest.AveragePrice = entryPrice;
             interest.Direction = positionAmount >= tradeAmount ? interest.Direction : Enum.Parse<Entities.Direction>(dto.Direction.ToString());
         }
+
+        interest.Orders.Add(dto.ToOrderEntity());
     }
 
     public static InterestDto ToDto(this Interest interest) => new()
@@ -35,5 +39,6 @@ public static class InterestExtensions
         Quantity = interest.Quantity,
         AveragePrice = interest.AveragePrice,
         Direction = Enum.Parse<Models.Direction>(interest.Direction.ToString()),
+        Orders = interest.Orders.Select(i => i.ToOrderDto()).ToList()
     };
 }

@@ -9,13 +9,15 @@ using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
 using MarketDataAggregator.Contracts.Events;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AutoMapper;
 
-namespace EventStore.Infrastructure;
+namespace MarketDataAggregator.Infrastructure;
 
 public class RabbitMqConsumer : IDisposable
 {
     private readonly ILogger<RabbitMqConsumer> logger;
     private readonly IMediator mediator;
+    private readonly IMapper mapper;
     private readonly RabbitMqClientSettings rabbitMQClientSettings;
     private readonly EventsSnapshotSettings eventsSnapshotSettings;
     private readonly IConnection connection;
@@ -26,7 +28,8 @@ public class RabbitMqConsumer : IDisposable
         ILogger<RabbitMqConsumer> logger,
         IMediator mediator,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
-        EventsSnapshotSettings eventsSnapshotSettings)
+        EventsSnapshotSettings eventsSnapshotSettings,
+        IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value);
@@ -34,10 +37,11 @@ public class RabbitMqConsumer : IDisposable
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.UserName);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.Password);
         ArgumentNullException.ThrowIfNull(eventsSnapshotSettings);
-        
+
         this.logger = logger;
         this.mediator = mediator;
         this.eventsSnapshotSettings = eventsSnapshotSettings;
+        this.mapper = mapper;
         rabbitMQClientSettings = rabbitMQClientOptions.Value;
 
         var factory = new ConnectionFactory()
@@ -106,6 +110,7 @@ public class RabbitMqConsumer : IDisposable
             var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, options);
             if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
             if (!eventsSnapshort.Events.Any()) return;
+            LogEvents(eventsSnapshort.Events.Select(i => JsonSerializer.Serialize(i, options)));
             var dtosByEventType = eventsSnapshort.Events.GroupBy(e => e.EventType);
             foreach (var group in dtosByEventType)
             {
@@ -123,24 +128,27 @@ public class RabbitMqConsumer : IDisposable
         {
             case EventType.MarketOrderReceived:
                 {
-                    var dtos = events.Select(Deserialize<MarketDataAggregator.Models.Interests.OrderDto>);
-                    var input = new MarketDataAggregator.Models.Interests.AddOrdersInput { Dtos = dtos };
+                    var dtos = events.Select(Deserialize<Contracts.Interests.OrderDto>);
+                    var input = new Models.Interests.AddOrdersInput
+                    {
+                        Dtos = dtos.Select(mapper.Map<Models.Interests.OrderDto>)
+                    };
                     mediator.Send(input);
                 }
                 break;
 
             case EventType.OhlcReceived:
                 {
-                    var dtos = events.Select(Deserialize<MarketDataAggregator.Models.Ohlcs.OhlcDto>);
-                    var input = new MarketDataAggregator.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
+                    var dtos = events.Select(Deserialize<Models.Ohlcs.OhlcDto>);
+                    var input = new Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;
 
             case EventType.OwnTradeReceived:
                 {
-                    var dtos = events.Select(Deserialize<MarketDataAggregator.Models.Positions.OwnTradeDto>);
-                    var input = new MarketDataAggregator.Models.Positions.AddOwnTradesInput { Dtos = dtos };
+                    var dtos = events.Select(Deserialize<Models.Positions.OwnTradeDto>);
+                    var input = new Models.Positions.AddOwnTradesInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;
@@ -156,6 +164,15 @@ public class RabbitMqConsumer : IDisposable
     {
         var dto = JsonSerializer.Deserialize<T>(eventData);
         return dto ?? throw new NullReferenceException(nameof(dto));
+    }
+
+    private void LogEvents(IEnumerable<string> events)
+    {
+        foreach(var @event in events)
+        {
+            logger.LogInformation("{event} received", @event);
+        }
+        
     }
 
     // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
