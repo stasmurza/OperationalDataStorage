@@ -28,21 +28,21 @@ public class RabbitMqConsumer : IDisposable
         ILogger<RabbitMqConsumer> logger,
         IMediator mediator,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
-        EventsSnapshotSettings eventsSnapshotSettings,
+        IOptions<EventsSnapshotSettings> eventsSnapshotOptions,
         IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value);
-        ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.HostName);
-        ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.UserName);
-        ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value.Password);
-        ArgumentNullException.ThrowIfNull(eventsSnapshotSettings);
+        ArgumentNullException.ThrowIfNull(eventsSnapshotOptions);
+        ArgumentNullException.ThrowIfNull(eventsSnapshotOptions.Value);
+        rabbitMQClientOptions.Value.Validate();
+        eventsSnapshotOptions.Value.Validate();
 
         this.logger = logger;
         this.mediator = mediator;
-        this.eventsSnapshotSettings = eventsSnapshotSettings;
+        this.rabbitMQClientSettings = rabbitMQClientOptions.Value;
+        this.eventsSnapshotSettings = eventsSnapshotOptions.Value;
         this.mapper = mapper;
-        rabbitMQClientSettings = rabbitMQClientOptions.Value;
 
         var factory = new ConnectionFactory()
         {

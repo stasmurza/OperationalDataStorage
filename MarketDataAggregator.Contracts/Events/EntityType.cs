@@ -1,10 +1,27 @@
-﻿namespace MarketDataAggregator.Contracts.Events
+﻿namespace MarketDataAggregator.Contracts.Events;
+
+/// <summary>
+/// Entity type.
+/// </summary>
+public enum EntityType
 {
-    public enum EntityType
-    {
-        Ohlc,
-        OwnTrade,
-        TradingOrder,
-        MarketOrder,
-    }
+    /// <summary>
+    /// Ohlc.
+    /// </summary>
+    Ohlc,
+
+    /// <summary>
+    /// Own trade.
+    /// </summary>
+    OwnTrade,
+
+    /// <summary>
+    /// Trading order.
+    /// </summary>
+    TradingOrder,
+
+    /// <summary>
+    /// Market order.
+    /// </summary>
+    MarketOrder,
 }

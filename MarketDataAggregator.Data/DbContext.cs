@@ -24,6 +24,10 @@ public class DbContext : IContext, IDisposable
 
     public DbContext(IOptions<DatabaseSettings> options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(options.Value);
+        options.Value.Validate();
+
         Client = new MongoClient(options.Value.ConnectionString);
         Database = Client.GetDatabase(options.Value.DatabaseName);
     }

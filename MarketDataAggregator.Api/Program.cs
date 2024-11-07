@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMarketDataAggregatorServices(builder.Configuration);
 builder.Services.AddControllers().AddJsonOptions(i => i.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureOpenApi();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

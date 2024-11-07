@@ -27,7 +27,7 @@ public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBas
     [HttpPost]
     public async Task PostAsync(AddOhlcRequest request)
     {
-        var input = mapper.Map<AddOhlcsInput>(request);
+        var input = mapper.Map<AddOhlcInput>(request);
         await mediator.Send(input);
     }
 }

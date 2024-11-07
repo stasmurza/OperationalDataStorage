@@ -1,6 +1,12 @@
 ﻿namespace MarketDataAggregator.Contracts.Events;
 
+/// <summary>
+/// Snapshot of new events.
+/// </summary>
 public class EventsSnapshot
 {
+    /// <summary>
+    /// Events.
+    /// </summary>
     public required IEnumerable<EventDto> Events { get; set; } = [];
 }

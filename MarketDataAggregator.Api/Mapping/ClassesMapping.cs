@@ -13,7 +13,7 @@ public class ClassesMapping : Profile
     public ClassesMapping()
     {
         // Contract
-        CreateMap<Contracts.Ohlcs.AddOhlcRequest, Models.Ohlcs.AddOhlcsInput>();
+        CreateMap<Contracts.Ohlcs.AddOhlcRequest, Models.Ohlcs.AddOhlcInput>();
         CreateMap<Contracts.Ohlcs.GetOhlcsRequest, Models.Ohlcs.GetOhlcsInput>();
         CreateMap<Contracts.Ohlcs.TimeInterval, Models.Ohlcs.TimeInterval>();
         CreateMap<Contracts.Interests.GetInterestsRequest, Models.Interests.GetInterestsInput>();

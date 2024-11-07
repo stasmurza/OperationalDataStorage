@@ -1,5 +1,8 @@
 ﻿namespace MarketDataAggregator.Contracts.Events;
 
+/// <summary>
+/// Type of event.
+/// </summary>
 public enum EventType
 {
     /// <summary>
