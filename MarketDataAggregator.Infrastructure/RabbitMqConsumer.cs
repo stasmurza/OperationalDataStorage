@@ -109,9 +109,9 @@ public class RabbitMqConsumer : IDisposable
             var routingKey = ea.RoutingKey;
             var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, options);
             if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
-            if (!eventsSnapshort.Events.Any()) return;
-            LogEvents(eventsSnapshort.Events.Select(i => JsonSerializer.Serialize(i, options)));
-            var dtosByEventType = eventsSnapshort.Events.GroupBy(e => e.EventType);
+            if (!eventsSnapshort.NewEvents.Any()) return;
+            LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, options)));
+            var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
             foreach (var group in dtosByEventType)
             {
                 ProcessEvents(group.Key, group.Select(i => i.EventData));

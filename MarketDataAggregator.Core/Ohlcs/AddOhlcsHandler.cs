@@ -29,7 +29,6 @@ public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> 
         {
             semaphore.Release();
         }
-        
     }
 
     private async Task HandleInternalAsync(IEnumerable<OhlcDto> dtos)

@@ -8,5 +8,5 @@ public class EventsSnapshot
     /// <summary>
     /// Events.
     /// </summary>
-    public required IEnumerable<EventDto> Events { get; set; } = [];
+    public required IEnumerable<EventDto> NewEvents { get; set; } = [];
 }
