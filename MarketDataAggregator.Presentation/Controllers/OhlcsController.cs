@@ -3,6 +3,9 @@ using MarketDataAggregator.Contracts.Ohlcs;
 using MarketDataAggregator.Application.Models.Ohlcs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace MarketDataAggregator.Presentation.Controllers;
 
@@ -14,6 +17,14 @@ public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBas
     private readonly IMapper mapper = mapper;
 
     [HttpGet]
+    /// <summary>
+    /// Returns ohlcs.
+    /// </summary>
+    /// <param name="request"><see cref="GetOhlcsRequest"/></param>
+    /// <returns><see cref="GetOhlcsResponse"/></returns>
+    [HttpGet("{companyId}")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<GetOhlcsResponse> GetAsync([FromQuery] GetOhlcsRequest request)
     {
         var input = mapper.Map<GetOhlcsInput>(request);
@@ -24,10 +35,23 @@ public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBas
         };
     }
 
+    /// <summary>
+    /// Creates or updates OHLC item and returns created company's data.
+    /// </summary>
+    /// <param name="request">OHLC <see cref="AddOhlcRequest"/></param>
+    /// <returns>Id of created or updated item <see cref="AddOhlcResponse"/></returns>
     [HttpPost]
-    public async Task PostAsync(AddOhlcRequest request)
+    [ProducesResponseType((int)HttpStatusCode.Created)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    [HttpPost]
+    public async Task<IActionResult> PostAsync([FromBody] AddOhlcRequest request)
     {
         var input = mapper.Map<AddOhlcInput>(request);
-        await mediator.Send(input);
+        var output = await mediator.Send(input);
+
+        return StatusCode(
+            (int)HttpStatusCode.Created,
+            mapper.Map<AddOhlcResponse>(output));
     }
 }

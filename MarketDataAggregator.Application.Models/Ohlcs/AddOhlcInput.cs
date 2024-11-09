@@ -2,7 +2,7 @@
 
 namespace MarketDataAggregator.Application.Models.Ohlcs;
 
-public struct AddOhlcInput : IRequest
+public struct AddOhlcInput : IRequest<AddOhlcOutput>
 {
     public required DateTime StartTime { get; set; }
 

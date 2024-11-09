@@ -8,6 +8,6 @@ public class GetPositionsRequest
     /// <summary>
     /// Strategy.
     /// </summary>
-    /// <example>Turtle.</example>
+    /// <example>Turtle</example>
     public required string Strategy { get; set; }
 }

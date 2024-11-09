@@ -8,6 +8,6 @@ public class GetInterestsRequest
     /// <summary>
     /// Strategy to filter data.
     /// </summary>
-    /// <example>Turtle.</example>
+    /// <example>Turtle</example>
     public required string Strategy { get; set; }
 }
