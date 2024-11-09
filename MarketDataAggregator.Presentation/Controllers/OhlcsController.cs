@@ -16,13 +16,12 @@ public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBas
     private readonly IMediator mediator = mediator;
     private readonly IMapper mapper = mapper;
 
-    [HttpGet]
     /// <summary>
     /// Returns ohlcs.
     /// </summary>
     /// <param name="request"><see cref="GetOhlcsRequest"/></param>
     /// <returns><see cref="GetOhlcsResponse"/></returns>
-    [HttpGet("{companyId}")]
+    [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<GetOhlcsResponse> GetAsync([FromQuery] GetOhlcsRequest request)

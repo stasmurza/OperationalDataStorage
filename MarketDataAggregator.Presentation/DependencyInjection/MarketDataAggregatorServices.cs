@@ -52,11 +52,12 @@ public static class MarketDataAggregatorServices
             c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
-                Title = "Event store.",
-                Description = "Event store."
+                Title = "Market data aggregator.",
+                Description = "Aggregator of market data."
             });
             var filePath = Path.Combine(AppContext.BaseDirectory, "MarketDataAggregator.Contracts.xml");
             c.IncludeXmlComments(filePath);
+            c.DescribeAllParametersInCamelCase();
         });
 
         return services;
