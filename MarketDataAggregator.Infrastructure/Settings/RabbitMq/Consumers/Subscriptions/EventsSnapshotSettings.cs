@@ -1,6 +1,6 @@
 ﻿using MarketDataAggregator.Application.Settings;
 
-namespace MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
+namespace MarketDataAggregator.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
 
 public class EventsSnapshotSettings : IValidatable
 {

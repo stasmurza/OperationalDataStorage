@@ -5,27 +5,29 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using MarketDataAggregator.Infrastructure.Settings.RabbitMq;
-using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
 using MarketDataAggregator.Contracts.Events;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
+using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
+using MongoDB.Driver;
 
 namespace MarketDataAggregator.Infrastructure;
 
-public class RabbitMqConsumer : IDisposable
+public class EventsSnapshotConsumer : IDisposable
 {
-    private readonly ILogger<RabbitMqConsumer> logger;
+    private readonly ILogger<EventsSnapshotConsumer> logger;
     private readonly IMediator mediator;
     private readonly IMapper mapper;
     private readonly RabbitMqClientSettings rabbitMQClientSettings;
     private readonly EventsSnapshotSettings eventsSnapshotSettings;
     private readonly IConnection connection;
     private readonly IModel channel;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
     private bool disposedValue;
 
-    public RabbitMqConsumer(
-        ILogger<RabbitMqConsumer> logger,
+    public EventsSnapshotConsumer(
+        ILogger<EventsSnapshotConsumer> logger,
         IMediator mediator,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
         IOptions<EventsSnapshotSettings> eventsSnapshotOptions,
@@ -63,11 +65,38 @@ public class RabbitMqConsumer : IDisposable
                 routingKey: bindingKey);
         }
 
-        var consumer = CreateConsumer();
+        jsonSerializerOptions = new JsonSerializerOptions();
+        jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        var consumer = new EventingBasicConsumer(channel);
+        consumer.Received += Consumer_Received;
         channel.BasicConsume(
             queue: eventsSnapshotSettings.QueueName,
             autoAck: true,
             consumer: consumer);
+    }
+
+    private void Consumer_Received(object? sender, BasicDeliverEventArgs eventArgs)
+    {
+        try
+        {
+            var body = eventArgs.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            var routingKey = eventArgs.RoutingKey;
+            var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, jsonSerializerOptions);
+            if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
+            if (!eventsSnapshort.NewEvents.Any()) return;
+            LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, jsonSerializerOptions)));
+            var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
+            foreach (var group in dtosByEventType)
+            {
+                ProcessEvents(group.Key, group.Select(i => i.EventData));
+            }
+        }
+        catch (Exception exception)
+        {
+            logger.LogError("{exceptionMessage}", exception.Message);
+            throw;
+        }
     }
 
     public void Dispose()
@@ -94,32 +123,6 @@ public class RabbitMqConsumer : IDisposable
             connection.Dispose();
             disposedValue = true;
         }
-    }
-
-    private EventingBasicConsumer CreateConsumer()
-    {
-        var options = new JsonSerializerOptions();
-        options.Converters.Add(new JsonStringEnumConverter());
-
-        var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
-        {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            var routingKey = ea.RoutingKey;
-            var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, options);
-            if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
-            if (!eventsSnapshort.NewEvents.Any()) return;
-            LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, options)));
-            var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
-            foreach (var group in dtosByEventType)
-            {
-                ProcessEvents(group.Key, group.Select(i => i.EventData));
-            }
-
-        };
-
-        return consumer;
     }
 
     private void ProcessEvents(EventType eventType, IEnumerable<string> events)
@@ -155,8 +158,6 @@ public class RabbitMqConsumer : IDisposable
 
             default:
                 break;
-
-
         }
     }
 
@@ -172,11 +173,10 @@ public class RabbitMqConsumer : IDisposable
         {
             logger.LogInformation("{event} received", @event);
         }
-        
     }
 
     // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    ~RabbitMqConsumer()
+    ~EventsSnapshotConsumer()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: false);

@@ -2,9 +2,12 @@
 
 namespace MarketDataAggregator.Presentation.HostedServices;
 
-public sealed class Consumer(RabbitMqConsumer rabbitMqConsumer) : IHostedService, IDisposable
+public sealed class MessageConsumersHostedService(
+    EventsSnapshotConsumer eventsSnapshotConsumer,
+    StateSnapshotConsumer stateSnapshotConsumer) : IHostedService, IDisposable
 {
-    private readonly RabbitMqConsumer rabbitMqConsumer = rabbitMqConsumer;
+    private readonly EventsSnapshotConsumer eventsSnapshotConsumer = eventsSnapshotConsumer;
+    private readonly StateSnapshotConsumer stateSnapshotConsumer = stateSnapshotConsumer;
     private bool disposedValue;
 
     public Task StartAsync(CancellationToken cancellationToken) =>Task.CompletedTask;
@@ -23,12 +26,14 @@ public sealed class Consumer(RabbitMqConsumer rabbitMqConsumer) : IHostedService
             // Free unmanaged resources (unmanaged objects) and override finalizer
             // Set large fields to null
             disposedValue = true;
-            rabbitMqConsumer.Dispose();
+            eventsSnapshotConsumer.Dispose();
+            stateSnapshotConsumer.Dispose();
+
         }
     }
 
     // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources.
-    ~Consumer()
+    ~MessageConsumersHostedService()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method.
         Dispose(disposing: false);

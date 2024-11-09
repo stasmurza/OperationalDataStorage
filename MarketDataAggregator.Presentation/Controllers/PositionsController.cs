@@ -4,6 +4,7 @@ using MarketDataAggregator.Contracts.Positions;
 using MarketDataAggregator.Application.Models.Positions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace MarketDataAggregator.Presentation.Controllers;
 
@@ -14,7 +15,14 @@ public class PositionsController(IMediator mediator, IMapper mapper) : Controlle
     private readonly IMediator mediator = mediator;
     private readonly IMapper mapper = mapper;
 
+    /// <summary>
+    /// Returns positions.
+    /// </summary>
+    /// <param name="request"><see cref="GetPositionsRequest"/></param>
+    /// <returns><see cref="GetPositionsResponse"/></returns>
     [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<GetPositionsResponse> GetAsync([FromQuery] GetPositionsRequest request)
     {
         var input = mapper.Map<GetPositionsInput>(request);

@@ -20,4 +20,8 @@
     <ProjectReference Include="..\MarketDataAggregator.Contracts\MarketDataAggregator.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Settings\RabbitMq\Publishers\" />
+  </ItemGroup>
+
 </Project>

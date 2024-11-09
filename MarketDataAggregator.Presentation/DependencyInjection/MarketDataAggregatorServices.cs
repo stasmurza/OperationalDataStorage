@@ -4,12 +4,13 @@ using MarketDataAggregator.Persistence.Repositories;
 using MarketDataAggregator.Infrastructure;
 using MarketDataAggregator.Infrastructure.Settings;
 using MarketDataAggregator.Infrastructure.Settings.RabbitMq;
-using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
 using Microsoft.OpenApi.Models;
 using MarketDataAggregator.Domain.Entities.Positions;
 using MarketDataAggregator.Domain.Entities.Ohlcs;
 using MarketDataAggregator.Domain.Entities.Interests;
 using MarketDataAggregator.Infrastructure.Persistence;
+using MarketDataAggregator.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
+using MarketDataAggregator.Infrastructure.Persistence.Repositories;
 
 namespace MarketDataAggregator.Presentation.DependencyInjection;
 
@@ -34,8 +35,8 @@ public static class MarketDataAggregatorServices
         services.AddSingleton<IRepository<Interest>, InterestRepository>();
         services.AddSingleton<IRepository<Ohlc>, OhlcRepository>();
         services.AddSingleton<IRepository<Position>, PositionRepository>();
-        services.AddSingleton<RabbitMqConsumer>();
-        services.AddHostedService<HostedServices.Consumer>();
+        services.AddSingleton<EventsSnapshotConsumer>();
+        services.AddHostedService<HostedServices.MessageConsumersHostedService>();
 
         return services;
     }
