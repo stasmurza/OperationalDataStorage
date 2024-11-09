@@ -129,9 +129,9 @@ public class RabbitMqConsumer : IDisposable
             case EventType.MarketOrderReceived:
                 {
                     var dtos = events.Select(Deserialize<Contracts.Interests.OrderDto>);
-                    var input = new Models.Interests.AddOrdersInput
+                    var input = new Application.Models.Interests.AddOrdersInput
                     {
-                        Dtos = dtos.Select(mapper.Map<Models.Interests.OrderDto>)
+                        Dtos = dtos.Select(mapper.Map<Application.Models.Interests.OrderDto>)
                     };
                     mediator.Send(input);
                 }
@@ -139,16 +139,16 @@ public class RabbitMqConsumer : IDisposable
 
             case EventType.OhlcReceived:
                 {
-                    var dtos = events.Select(Deserialize<Models.Ohlcs.OhlcDto>);
-                    var input = new Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
+                    var dtos = events.Select(Deserialize<Application.Models.Ohlcs.OhlcDto>);
+                    var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;
 
             case EventType.OwnTradeReceived:
                 {
-                    var dtos = events.Select(Deserialize<Models.Positions.OwnTradeDto>);
-                    var input = new Models.Positions.AddOwnTradesInput { Dtos = dtos };
+                    var dtos = events.Select(Deserialize<Application.Models.Positions.OwnTradeDto>);
+                    var input = new Application.Models.Positions.AddOwnTradesInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;

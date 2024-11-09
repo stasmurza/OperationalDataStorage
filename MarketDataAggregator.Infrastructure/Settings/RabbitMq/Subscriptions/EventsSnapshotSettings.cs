@@ -1,4 +1,4 @@
-﻿using MarketDataAggregator.Core.Settings;
+﻿using MarketDataAggregator.Application.Settings;
 
 namespace MarketDataAggregator.Infrastructure.Settings.RabbitMq.Subscriptions;
 

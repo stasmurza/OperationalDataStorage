@@ -1,0 +1,33 @@
+using AutoMapper;
+using MarketDataAggregator.Contracts.Ohlcs;
+using MarketDataAggregator.Application.Models.Ohlcs;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MarketDataAggregator.Presentation.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBase
+{
+    private readonly IMediator mediator = mediator;
+    private readonly IMapper mapper = mapper;
+
+    [HttpGet]
+    public async Task<GetOhlcsResponse> GetAsync([FromQuery] GetOhlcsRequest request)
+    {
+        var input = mapper.Map<GetOhlcsInput>(request);
+        var output = await mediator.Send(input);
+        return new GetOhlcsResponse
+        {
+            Ohlcs = output.Ohlcs.Select(mapper.Map<Contracts.Ohlcs.OhlcDto>)
+        };
+    }
+
+    [HttpPost]
+    public async Task PostAsync(AddOhlcRequest request)
+    {
+        var input = mapper.Map<AddOhlcInput>(request);
+        await mediator.Send(input);
+    }
+}
