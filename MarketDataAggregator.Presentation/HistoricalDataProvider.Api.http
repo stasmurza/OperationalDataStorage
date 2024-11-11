@@ -1,6 +1,0 @@
-@HistoricalDataProvider.Api_HostAddress = http://localhost:5041
-
-GET {{HistoricalDataProvider.Api_HostAddress}}/historicaldata/
-Accept: application/json
-
-###
