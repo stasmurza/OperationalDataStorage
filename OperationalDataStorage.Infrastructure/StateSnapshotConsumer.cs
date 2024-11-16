@@ -10,13 +10,12 @@ using System.Text.Json.Serialization;
 using AutoMapper;
 using OperationalDataStorage.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
 using OperationalDataStorage.Contracts.StateSnapshots;
-using MongoDB.Driver;
 
 namespace OperationalDataStorage.Infrastructure;
 
 public class StateSnapshotConsumer : IDisposable
 {
-    private readonly ILogger<EventsSnapshotConsumer> logger;
+    private readonly ILogger<StateSnapshotConsumer> logger;
     private readonly IMediator mediator;
     private readonly IMapper mapper;
     private readonly StateSnapshotPublisher stateSnapshotPublisher;
@@ -28,7 +27,7 @@ public class StateSnapshotConsumer : IDisposable
     private bool disposedValue;
 
     public StateSnapshotConsumer(
-        ILogger<EventsSnapshotConsumer> logger,
+        ILogger<StateSnapshotConsumer> logger,
         IMediator mediator,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
         IOptions<StateSnapshotSettings> stateSnapshotOptions,
@@ -97,7 +96,7 @@ public class StateSnapshotConsumer : IDisposable
                 Interests = getInterestsOutput.Interests.Select(i => mapper.Map<Contracts.Interests.InterestDto>(i)),
             };
 
-            stateSnapshotPublisher.PublishEventSnapshot(response, CancellationToken.None);
+            stateSnapshotPublisher.PublishStateSnapshot(response, CancellationToken.None);
         }
         catch (Exception exception)
         {

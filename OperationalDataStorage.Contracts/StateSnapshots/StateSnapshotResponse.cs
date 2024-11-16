@@ -1,7 +1,4 @@
-﻿using OperationalDataStorage.Contracts.Interests;
-using OperationalDataStorage.Contracts.Positions;
-
-namespace OperationalDataStorage.Contracts.StateSnapshots;
+﻿namespace OperationalDataStorage.Contracts.StateSnapshots;
 
 /// <summary>
 /// State snapshot response.

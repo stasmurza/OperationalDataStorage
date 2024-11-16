@@ -14,7 +14,6 @@ public class ClassesMapping : Profile
     {
         // Contract
         CreateMap<Contracts.Ohlcs.AddOhlcRequest, Application.Models.Ohlcs.AddOhlcInput>();
-        CreateMap<Contracts.Ohlcs.GetOhlcsRequest, Application.Models.Ohlcs.GetOhlcsInput>();
         CreateMap<Contracts.Ohlcs.TimeInterval, Application.Models.Ohlcs.TimeInterval>();
         CreateMap<Contracts.Interests.GetInterestsRequest, Application.Models.Interests.GetInterestsInput>();
         CreateMap<Contracts.Positions.GetPositionsRequest, Application.Models.Positions.GetPositionsInput>();

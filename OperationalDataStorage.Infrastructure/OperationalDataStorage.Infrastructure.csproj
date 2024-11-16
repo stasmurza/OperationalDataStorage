@@ -20,8 +20,4 @@
     <ProjectReference Include="..\OperationalDataStorage.Contracts\OperationalDataStorage.Contracts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Settings\RabbitMq\Publishers\" />
-  </ItemGroup>
-
 </Project>

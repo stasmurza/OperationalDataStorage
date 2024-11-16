@@ -36,6 +36,8 @@ public static class OperationalDataStorageServices
         services.AddSingleton<IRepository<Ohlc>, OhlcRepository>();
         services.AddSingleton<IRepository<Position>, PositionRepository>();
         services.AddSingleton<EventsSnapshotConsumer>();
+        services.AddSingleton<StateSnapshotConsumer>();
+        services.AddSingleton<StateSnapshotPublisher>();
         services.AddHostedService<HostedServices.MessageConsumersHostedService>();
 
         return services;

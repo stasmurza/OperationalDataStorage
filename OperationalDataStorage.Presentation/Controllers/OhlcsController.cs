@@ -4,7 +4,6 @@ using OperationalDataStorage.Application.Models.Ohlcs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Microsoft.AspNetCore.Authorization;
 using System.Data;
 
 namespace OperationalDataStorage.Presentation.Controllers;
@@ -19,14 +18,27 @@ public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBas
     /// <summary>
     /// Returns ohlcs.
     /// </summary>
-    /// <param name="request"><see cref="GetOhlcsRequest"/></param>
+    /// <param name="symbol" example="BTC/USDT">Symbol.</param>
+    /// <param name="start" example="2009-06-15T13:45:00">Start date and time, UTC.</param>
+    /// <param name="end" example="2009-06-16T13:45:00">End date and time, UTC.</param>
+    /// <param name="granularity" example="Days1">Granularity.</param>
     /// <returns><see cref="GetOhlcsResponse"/></returns>
-    [HttpGet]
+    [HttpGet("{symbol}/{start}/{end}/{granularity}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<GetOhlcsResponse> GetAsync([FromQuery] GetOhlcsRequest request)
+    public async Task<GetOhlcsResponse> GetAsync(
+        [FromRoute] string symbol,
+        [FromRoute] DateTime start,
+        [FromRoute] DateTime end,
+        [FromRoute] Contracts.Ohlcs.TimeInterval granularity)
     {
-        var input = mapper.Map<GetOhlcsInput>(request);
+        var input = new GetOhlcsInput
+        {
+            Symbol = symbol,
+            Start = start,
+            End = end,
+            Granularity = mapper.Map<Application.Models.Ohlcs.TimeInterval>(granularity)
+        };
         var output = await mediator.Send(input);
         return new GetOhlcsResponse
         {

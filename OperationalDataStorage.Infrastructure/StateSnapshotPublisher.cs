@@ -40,7 +40,7 @@ public class StateSnapshotPublisher : IDisposable
         channel.ExchangeDeclare(stateSnapshotSettings.ExchangeName, ExchangeType.Direct, durable: true, autoDelete: false);
     }
 
-    public void PublishEventSnapshot(StateSnapshotResponse stateSnapshot, CancellationToken cancellationToken)
+    public void PublishStateSnapshot(StateSnapshotResponse stateSnapshot, CancellationToken cancellationToken)
     {
         var properties = channel.CreateBasicProperties();
         properties.Persistent = true;
