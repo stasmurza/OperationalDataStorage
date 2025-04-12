@@ -2,10 +2,10 @@
 using OperationalDataStorage.Domain.Entities.Interests;
 using OperationalDataStorage.Domain.Entities.Ohlcs;
 using OperationalDataStorage.Domain.Entities.Positions;
-using OperationalDataStorage.Infrastructure.Settings;
 using OperationalDataStorage.Persistence;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using OperationalDataStorage.Infrastructure.Models.Settings;
 
 namespace OperationalDataStorage.Infrastructure.Persistence;
 

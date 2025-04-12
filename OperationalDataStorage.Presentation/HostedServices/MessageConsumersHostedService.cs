@@ -2,12 +2,9 @@
 
 namespace OperationalDataStorage.Presentation.HostedServices;
 
-public sealed class MessageConsumersHostedService(
-    EventsSnapshotConsumer eventsSnapshotConsumer,
-    StateSnapshotConsumer stateSnapshotConsumer) : IHostedService, IDisposable
+public sealed class MessageConsumersHostedService(EventsSnapshotConsumer eventsSnapshotConsumer) : IHostedService, IDisposable
 {
     private readonly EventsSnapshotConsumer eventsSnapshotConsumer = eventsSnapshotConsumer;
-    private readonly StateSnapshotConsumer stateSnapshotConsumer = stateSnapshotConsumer;
     private bool disposedValue;
 
     public Task StartAsync(CancellationToken cancellationToken) =>Task.CompletedTask;
@@ -27,7 +24,6 @@ public sealed class MessageConsumersHostedService(
             // Set large fields to null
             disposedValue = true;
             eventsSnapshotConsumer.Dispose();
-            stateSnapshotConsumer.Dispose();
 
         }
     }

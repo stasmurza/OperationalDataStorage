@@ -18,10 +18,10 @@ public enum EventType
     /// <summary>
     /// Own trade received.
     /// </summary>
-    OwnTradeReceived,
+    FilledOrderReceived,
 
     /// <summary>
     /// Trading order received.
     /// </summary>
-    TradingOrderReceived,
+    TradeRequestReceived,
 }

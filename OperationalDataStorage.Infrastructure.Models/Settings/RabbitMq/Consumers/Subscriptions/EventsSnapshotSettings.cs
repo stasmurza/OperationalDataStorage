@@ -1,6 +1,6 @@
 ﻿using OperationalDataStorage.Application.Settings;
 
-namespace OperationalDataStorage.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
+namespace OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq.Consumers.Subscriptions;
 
 public class EventsSnapshotSettings : IValidatable
 {

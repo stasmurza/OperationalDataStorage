@@ -4,13 +4,13 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using OperationalDataStorage.Infrastructure.Settings.RabbitMq;
 using OperationalDataStorage.Contracts.Events;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
-using OperationalDataStorage.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
 using MongoDB.Driver;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq.Consumers.Subscriptions;
 
 namespace OperationalDataStorage.Infrastructure;
 
@@ -129,6 +129,22 @@ public class EventsSnapshotConsumer : IDisposable
     {
         switch (eventType)
         {
+            case EventType.OhlcReceived:
+                {
+                    var dtos = events.Select(Deserialize<Application.Models.Ohlcs.OhlcDto>);
+                    var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
+                    mediator.Send(input);
+                }
+                break;
+
+            case EventType.TradeRequestReceived:
+                {
+                    var dtos = events.Select(Deserialize<Application.Models.Positions.OwnTradeDto>);
+                    var input = new Application.Models.Positions.AddOwnTradesInput { Dtos = dtos };
+                    mediator.Send(input);
+                }
+                break;
+
             case EventType.MarketOrderReceived:
                 {
                     var dtos = events.Select(Deserialize<Contracts.Interests.OrderDto>);
@@ -140,15 +156,7 @@ public class EventsSnapshotConsumer : IDisposable
                 }
                 break;
 
-            case EventType.OhlcReceived:
-                {
-                    var dtos = events.Select(Deserialize<Application.Models.Ohlcs.OhlcDto>);
-                    var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
-                    mediator.Send(input);
-                }
-                break;
-
-            case EventType.OwnTradeReceived:
+            case EventType.FilledOrderReceived:
                 {
                     var dtos = events.Select(Deserialize<Application.Models.Positions.OwnTradeDto>);
                     var input = new Application.Models.Positions.AddOwnTradesInput { Dtos = dtos };

@@ -1,7 +1,6 @@
 using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
-using EventStore.Models.Settings;
 using Microsoft.Extensions.Configuration;
+using OperationalDataStorage.Infrastructure.Models.Settings;
 using OperationalDataStorage.Service.Tests.Containers.Abstractions;
 using Testcontainers.MongoDb;
 

@@ -21,5 +21,5 @@ public class Position : IEntity
 
     public required Direction Direction { get; set; }
 
-    public required List<OwnTrade> OwnTrades { get; set; }
+    public required List<OwnTrade> Orders { get; set; }
 }

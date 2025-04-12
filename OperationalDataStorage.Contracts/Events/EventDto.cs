@@ -11,14 +11,24 @@ public class EventDto
     public required string Id { get; set; }
 
     /// <summary>
+    /// Event identifier.
+    /// </summary>
+    public required Guid EventId { get; set; }
+
+    /// <summary>
     /// Date of the event.
     /// </summary>
-    public required DateTime EventDate { get; set; }
+    public required DateTime EventDateTime { get; set; }
 
     /// <summary>
     /// Event type.
     /// </summary>
     public required EventType EventType { get; set; }
+
+    /// <summary>
+    /// Event data.
+    /// </summary>
+    public required string EventData { get; set; }
 
     /// <summary>
     /// Entity type.
@@ -29,9 +39,4 @@ public class EventDto
     /// Entity id.
     /// </summary>
     public required string EntityId { get; set; }
-
-    /// <summary>
-    /// Event data.
-    /// </summary>
-    public required string EventData { get; set; }
 }

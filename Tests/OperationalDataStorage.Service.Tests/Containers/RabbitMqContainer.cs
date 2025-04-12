@@ -1,6 +1,6 @@
 ﻿using DotNet.Testcontainers.Builders;
-using EventStore.Models.Settings;
 using Microsoft.Extensions.Configuration;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
 using OperationalDataStorage.Service.Tests.Containers.Abstractions;
 using Testcontainers.RabbitMq;
 

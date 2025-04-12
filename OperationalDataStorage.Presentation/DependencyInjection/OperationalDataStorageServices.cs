@@ -2,15 +2,15 @@
 using OperationalDataStorage.Application.Repositories.Abstractions;
 using OperationalDataStorage.Persistence.Repositories;
 using OperationalDataStorage.Infrastructure;
-using OperationalDataStorage.Infrastructure.Settings;
-using OperationalDataStorage.Infrastructure.Settings.RabbitMq;
 using Microsoft.OpenApi.Models;
 using OperationalDataStorage.Domain.Entities.Positions;
 using OperationalDataStorage.Domain.Entities.Ohlcs;
 using OperationalDataStorage.Domain.Entities.Interests;
 using OperationalDataStorage.Infrastructure.Persistence;
-using OperationalDataStorage.Infrastructure.Settings.RabbitMq.Consumers.Subscriptions;
 using OperationalDataStorage.Infrastructure.Persistence.Repositories;
+using OperationalDataStorage.Infrastructure.Models.Settings;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq.Consumers.Subscriptions;
 
 namespace OperationalDataStorage.Presentation.DependencyInjection;
 
@@ -36,8 +36,6 @@ public static class OperationalDataStorageServices
         services.AddSingleton<IRepository<Ohlc>, OhlcRepository>();
         services.AddSingleton<IRepository<Position>, PositionRepository>();
         services.AddSingleton<EventsSnapshotConsumer>();
-        services.AddSingleton<StateSnapshotConsumer>();
-        services.AddSingleton<StateSnapshotPublisher>();
         services.AddHostedService<HostedServices.MessageConsumersHostedService>();
 
         return services;

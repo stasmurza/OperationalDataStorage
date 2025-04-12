@@ -3,21 +3,21 @@ using OperationalDataStorage.Domain.Entities.Positions;
 
 namespace OperationalDataStorage.Application.Positions.Extensions;
 
-public static class OwnTradeDtoExtensions
+public static class FilledOrderDtoExtensions
 {
-    public static Position ToPositionEntity(this OwnTradeDto dto) => new()
+    public static Position ToPositionEntity(this FilledOrderDto dto) => new()
     {
         Symbol = dto.Symbol,
         Strategy = dto.Strategy,
-        Quantity = dto.Quantity,
-        EntryPrice = dto.Price,
+        Quantity = dto.FilledQuantity,
+        EntryPrice = dto.AverageFillPrice,
         Direction = Enum.Parse<Domain.Entities.Direction>(dto.Direction.ToString()),
-        OwnTrades = [ dto.ToOwnTradeEntity() ]
+        Orders = [ dto.ToOwnTradeEntity() ]
     };
 
-    public static OwnTrade ToOwnTradeEntity(this OwnTradeDto dto) => new()
+    public static OwnTrade ToOwnTradeEntity(this FilledOrderDto dto) => new()
     {
-        Id = dto.Id,
+        Id = dto.OrderId,
         DateTime = dto.DateTime,
         Symbol = dto.Symbol,
         Strategy = dto.Strategy,

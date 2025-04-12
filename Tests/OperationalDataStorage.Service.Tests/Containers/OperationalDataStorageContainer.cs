@@ -8,23 +8,23 @@ using System.Net;
 
 namespace OperationalDataStorage.Service.Tests.Containers;
 
-public sealed class EventStoreContainer : ITestContainer
+public sealed class OperationalDataStorageContainer : ITestContainer
 {
     private readonly IFutureDockerImage futureDockerImage;
     private readonly IContainer container;
 
-    public EventStoreContainer(DockerNetwork dockerNetwork, IConfiguration configuration)
+    public OperationalDataStorageContainer(DockerNetwork dockerNetwork, IConfiguration configuration)
     {
         futureDockerImage = new ImageFromDockerfileBuilder()
             .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), string.Empty)
-            .WithDockerfile("EventStore.Presentation.Dockerfile")
+            .WithDockerfile("OperationalDataStorage.Presentation.Dockerfile")
             .WithCleanUp(true)
             .Build();
 
         using IOutputConsumer outputConsumer = Consume.RedirectStdoutAndStderrToConsole();
 
         container = new ContainerBuilder()
-            .WithName("EventStore.Service.Tests.Containers.EventStoreContainer")
+            .WithName("OperationalDataStorage.Service.Tests.Containers.OperationalDataStorageContainer")
             .WithImage(futureDockerImage)
             .WithEnvironment("DOTNET_ENVIRONMENT", "tests")
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", "tests")

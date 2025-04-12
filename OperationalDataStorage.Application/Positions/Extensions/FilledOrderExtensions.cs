@@ -3,7 +3,7 @@ using OperationalDataStorage.Domain.Entities.Positions;
 
 namespace OperationalDataStorage.Application.Positions.Extensions;
 
-public static class OwnTradeExtensions
+public static class FilledOrderExtensions
 {
     public static OwnTradeDto ToOwnTradeDto(this OwnTrade ownTrade) => new()
     {

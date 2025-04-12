@@ -13,12 +13,12 @@ public enum EntityType
     /// <summary>
     /// Own trade.
     /// </summary>
-    OwnTrade,
+    FilledOrder,
 
     /// <summary>
-    /// Trading order.
+    /// Trade request.
     /// </summary>
-    TradingOrder,
+    TradeRequest,
 
     /// <summary>
     /// Market order.
