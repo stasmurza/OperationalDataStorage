@@ -4,8 +4,8 @@ using System.Text.Json;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
 using System.Runtime.CompilerServices;
-using EventStore.Models.Settings;
 using OperationalDataStorage.Service.Tests.Proxies.Abstractions;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
 
 namespace OperationalDataStorage.Service.Tests.Proxies;
 

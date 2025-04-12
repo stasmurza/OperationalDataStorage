@@ -42,7 +42,7 @@ public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
         var output = await mediator.Send(input);
         return new GetOhlcsResponse
         {
-            Ohlcs = output.Ohlcs.Select(mapper.Map<Contracts.Ohlcs.OhlcDto>)
+            Ohlcs = output.Ohlcs.Select(mapper.Map<Contracts.Ohlcs.Ohlc>)
         };
     }
 

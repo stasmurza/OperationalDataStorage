@@ -1,9 +1,9 @@
-﻿namespace OperationalDataStorage.Contracts.Interests;
+﻿namespace OperationalDataStorage.Contracts.Positions;
 
 /// <summary>
-/// Order DTO.
+/// Position.
 /// </summary>
-public class OrderDto
+public class Position
 {
     /// <summary>
     /// Id.
@@ -26,12 +26,17 @@ public class OrderDto
     public required decimal Quantity { get; set; }
 
     /// <summary>
-    /// Price.
+    /// Entry price.
     /// </summary>
-    public required decimal Price { get; set; }
+    public required decimal EntryPrice { get; set; }
 
     /// <summary>
     /// Direction.
     /// </summary>
     public required Direction Direction { get; set; }
+
+    /// <summary>
+    /// Own trades.
+    /// </summary>
+    public required List<Order> Orders { get; set; }
 }

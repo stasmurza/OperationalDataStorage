@@ -1,6 +1,6 @@
 ﻿using System.Text;
-using EventStore.Models.Settings;
 using Newtonsoft.Json;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
 using OperationalDataStorage.Service.Tests.Proxies.Abstractions;
 using RabbitMQ.Client;
 

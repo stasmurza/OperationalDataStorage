@@ -5,17 +5,8 @@ namespace OperationalDataStorage.Application.Positions.Extensions;
 
 public static class FilledOrderExtensions
 {
-    public static OwnTradeDto ToOwnTradeDto(this OwnTrade ownTrade) => new()
+    public static OrderDto ToOrderDto(this Order order) => new()
     {
-        Id = ownTrade.Id,
-        DateTime = ownTrade.DateTime,
-        Symbol = ownTrade.Symbol,
-        Strategy = ownTrade.Strategy,
-        Quantity = ownTrade.Quantity,
-        Price = ownTrade.Price,
-        Direction = Enum.Parse<Models.Direction>(ownTrade.Direction.ToString()),
-        Fee = ownTrade.Fee,
-        FeeCurrency = ownTrade.FeeCurrency,
-        OrderType = ownTrade.OrderType,
+        OrderId = order.OrderId
     };
 }

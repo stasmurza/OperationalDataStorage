@@ -1,9 +1,9 @@
 ﻿namespace OperationalDataStorage.Contracts.Positions;
 
 /// <summary>
-/// Filled order DTO.
+/// Filled order.
 /// </summary>
-public class FilledOrderDto
+public class FilledOrder
 {
     /// <summary>
     /// Id of order.

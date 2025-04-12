@@ -6,11 +6,6 @@
 public enum EventType
 {
     /// <summary>
-    /// Market order received.
-    /// </summary>
-    MarketOrderReceived,
-
-    /// <summary>
     /// Ohlc received.
     /// </summary>
     OhlcReceived,
@@ -19,9 +14,4 @@ public enum EventType
     /// Own trade received.
     /// </summary>
     FilledOrderReceived,
-
-    /// <summary>
-    /// Trading order received.
-    /// </summary>
-    TradeRequestReceived,
 }

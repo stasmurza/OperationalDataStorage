@@ -29,7 +29,7 @@ public sealed class TestEnvironment : IAsyncDisposable
         DockerNetwork = new DockerNetwork();
         RabbitMqContainer = new RabbitMqContainer(DockerNetwork, Configuration);
         DatabaseContainer = new DatabaseContainer(DockerNetwork, Configuration);
-        EventStoreContainer = new OperationalDataStorageContainer(DockerNetwork, Configuration);
+        EventStoreContainer = new OperationalDataStorageContainer(DockerNetwork);
     }
 
     public async Task SetupAsync(CancellationToken cancellationToken)

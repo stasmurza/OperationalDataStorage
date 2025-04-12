@@ -18,7 +18,6 @@ public class EventsSnapshotConsumer : IDisposable
 {
     private readonly ILogger<EventsSnapshotConsumer> logger;
     private readonly IMediator mediator;
-    private readonly IMapper mapper;
     private readonly RabbitMqClientSettings rabbitMQClientSettings;
     private readonly EventsSnapshotSettings eventsSnapshotSettings;
     private readonly IConnection connection;
@@ -30,8 +29,7 @@ public class EventsSnapshotConsumer : IDisposable
         ILogger<EventsSnapshotConsumer> logger,
         IMediator mediator,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
-        IOptions<EventsSnapshotSettings> eventsSnapshotOptions,
-        IMapper mapper)
+        IOptions<EventsSnapshotSettings> eventsSnapshotOptions)
     {
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions);
         ArgumentNullException.ThrowIfNull(rabbitMQClientOptions.Value);
@@ -44,7 +42,6 @@ public class EventsSnapshotConsumer : IDisposable
         this.mediator = mediator;
         this.rabbitMQClientSettings = rabbitMQClientOptions.Value;
         this.eventsSnapshotSettings = eventsSnapshotOptions.Value;
-        this.mapper = mapper;
 
         var factory = new ConnectionFactory()
         {
@@ -137,29 +134,10 @@ public class EventsSnapshotConsumer : IDisposable
                 }
                 break;
 
-            case EventType.TradeRequestReceived:
-                {
-                    var dtos = events.Select(Deserialize<Application.Models.Positions.OwnTradeDto>);
-                    var input = new Application.Models.Positions.AddOwnTradesInput { Dtos = dtos };
-                    mediator.Send(input);
-                }
-                break;
-
-            case EventType.MarketOrderReceived:
-                {
-                    var dtos = events.Select(Deserialize<Contracts.Interests.OrderDto>);
-                    var input = new Application.Models.Interests.AddOrdersInput
-                    {
-                        Dtos = dtos.Select(mapper.Map<Application.Models.Interests.OrderDto>)
-                    };
-                    mediator.Send(input);
-                }
-                break;
-
             case EventType.FilledOrderReceived:
                 {
-                    var dtos = events.Select(Deserialize<Application.Models.Positions.OwnTradeDto>);
-                    var input = new Application.Models.Positions.AddOwnTradesInput { Dtos = dtos };
+                    var dtos = events.Select(Deserialize<Application.Models.Positions.FilledOrderDto>);
+                    var input = new Application.Models.Positions.AddFilledOrderInput { Dtos = dtos };
                     mediator.Send(input);
                 }
                 break;

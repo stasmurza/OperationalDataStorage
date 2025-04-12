@@ -14,5 +14,5 @@ public class PositionDto
 
     public required Direction Direction { get; set; }
 
-    public required List<OwnTradeDto> OwnTrades { get; set; }
+    public required List<OrderDto> Orders { get; set; }
 }

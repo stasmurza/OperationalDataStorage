@@ -12,20 +12,11 @@ public static class FilledOrderDtoExtensions
         Quantity = dto.FilledQuantity,
         EntryPrice = dto.AverageFillPrice,
         Direction = Enum.Parse<Domain.Entities.Direction>(dto.Direction.ToString()),
-        Orders = [ dto.ToOwnTradeEntity() ]
+        Orders = [ dto.ToOrderEntity() ]
     };
 
-    public static OwnTrade ToOwnTradeEntity(this FilledOrderDto dto) => new()
+    public static Order ToOrderEntity(this FilledOrderDto dto) => new()
     {
-        Id = dto.OrderId,
-        DateTime = dto.DateTime,
-        Symbol = dto.Symbol,
-        Strategy = dto.Strategy,
-        Quantity = dto.Quantity,
-        Price = dto.Price,
-        Direction = Enum.Parse<Domain.Entities.Direction>(dto.Direction.ToString()),
-        Fee = dto.Fee,
-        FeeCurrency = dto.FeeCurrency,
-        OrderType = dto.OrderType,
+        OrderId = dto.OrderId,
     };
 }

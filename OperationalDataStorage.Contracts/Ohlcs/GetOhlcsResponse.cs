@@ -8,5 +8,5 @@ public struct GetOhlcsResponse
     /// <summary>
     /// Ohlcs.
     /// </summary>
-    public IEnumerable<OhlcDto> Ohlcs { get; set; }
+    public IEnumerable<Ohlc> Ohlcs { get; set; }
 }

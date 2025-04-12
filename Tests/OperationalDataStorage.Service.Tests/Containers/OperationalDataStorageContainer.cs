@@ -13,7 +13,7 @@ public sealed class OperationalDataStorageContainer : ITestContainer
     private readonly IFutureDockerImage futureDockerImage;
     private readonly IContainer container;
 
-    public OperationalDataStorageContainer(DockerNetwork dockerNetwork, IConfiguration configuration)
+    public OperationalDataStorageContainer(DockerNetwork dockerNetwork)
     {
         futureDockerImage = new ImageFromDockerfileBuilder()
             .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), string.Empty)

@@ -1,9 +1,9 @@
 ﻿namespace OperationalDataStorage.Contracts.Ohlcs;
 
 /// <summary>
-/// Ohlc DTO.
+/// Ohlc.
 /// </summary>
-public class OhlcDto
+public class Ohlc
 {
     /// <summary>
     /// Start of the interval time.

@@ -8,5 +8,5 @@ public class GetPositionsResponse
     /// <summary>
     /// Positions.
     /// </summary>
-    public required IEnumerable<PositionDto> Positions { get; set; }
+    public required IEnumerable<Position> Positions { get; set; }
 }

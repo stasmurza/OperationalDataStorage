@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 
-namespace OperationalDataStorage.Persistence.Repositories;
+namespace OperationalDataStorage.Infrastructure.Persistence.Repositories;
 
 public class Repository<TEntity>(IMongoCollection<TEntity> collection) : IRepository<TEntity> where TEntity : IEntity
 {

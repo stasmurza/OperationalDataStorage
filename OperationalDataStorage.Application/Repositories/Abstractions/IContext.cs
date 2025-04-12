@@ -1,5 +1,4 @@
-﻿using OperationalDataStorage.Domain.Entities.Interests;
-using OperationalDataStorage.Domain.Entities.Ohlcs;
+﻿using OperationalDataStorage.Domain.Entities.Ohlcs;
 using OperationalDataStorage.Domain.Entities.Positions;
 using MongoDB.Driver;
 
@@ -10,8 +9,6 @@ public interface IContext
     IMongoDatabase Database { get; }
 
     public IMongoClient Client { get; }
-
-    IMongoCollection<Interest> Interests { get; }
 
     IMongoCollection<Ohlc> Ohlcs { get; }
     

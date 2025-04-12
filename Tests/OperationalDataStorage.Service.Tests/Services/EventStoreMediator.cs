@@ -1,7 +1,6 @@
-﻿using EventStore.Infrastructure;
-using EventStore.Models.Settings;
-using EventStore.Models.Settings.Subscriptions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
+using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq.Consumers.Subscriptions;
 using OperationalDataStorage.Service.Tests.Environments;
 using OperationalDataStorage.Service.Tests.Proxies;
 
@@ -15,15 +14,7 @@ public sealed class EventStoreMediator : IDisposable
 
     public EventsSnapshotSettings EventsSnapshotSettings { get; }
 
-    public TradeRequestSettings TradeRequestSettings { get; }
-
-    public MarketDataSettings MarketDataSettings { get; }
-
-    public MarketOrderSettings MarketOrderSettings { get; }
-
-    public FilledOrderSettings FilledOrderSettings { get; }
-
-    private readonly MessageConsumer<EventStore.Contracts.Events.EventsSnapshot> eventsSnapshotConsumer;
+    private readonly MessageConsumer<Contracts.Events.EventsSnapshot> eventsSnapshotConsumer;
     private readonly MessagePublisher messagePublisher;
 
     public EventStoreMediator(TestEnvironment testEnvironment)
@@ -41,15 +32,8 @@ public sealed class EventStoreMediator : IDisposable
 
         EventsSnapshotSettings = TestEnvironment.Configuration.GetSection(nameof(EventsSnapshotSettings)).Get<EventsSnapshotSettings>() ??
             throw new NullReferenceException(nameof(EventsSnapshotSettings));
-        TradeRequestSettings = TestEnvironment.Configuration.GetSection(nameof(TradeRequestSettings)).Get<TradeRequestSettings>() ??
-            throw new NullReferenceException(nameof(TradeRequestSettings));
-        MarketDataSettings = TestEnvironment.Configuration.GetSection(nameof(MarketDataSettings)).Get<MarketDataSettings>() ??
-            throw new NullReferenceException(nameof(MarketDataSettings));
-        MarketOrderSettings = TestEnvironment.Configuration.GetSection(nameof(MarketOrderSettings)).Get<MarketOrderSettings>() ??
-            throw new NullReferenceException(nameof(MarketOrderSettings));
-        FilledOrderSettings = TestEnvironment.Configuration.GetSection(nameof(FilledOrderSettings)).Get<FilledOrderSettings>() ??
-            throw new NullReferenceException(nameof(FilledOrderSettings));
-        eventsSnapshotConsumer = new MessageConsumer<EventStore.Contracts.Events.EventsSnapshot>(RabbitMqClientSettings);
+
+        eventsSnapshotConsumer = new MessageConsumer<Contracts.Events.EventsSnapshot>(RabbitMqClientSettings);
         messagePublisher = new MessagePublisher(RabbitMqClientSettings);
 
         eventsSnapshotConsumer.Subscribe(EventsSnapshotSettings.ExchangeName, EventsSnapshotSettings.RoutingKeys);
@@ -60,7 +44,7 @@ public sealed class EventStoreMediator : IDisposable
         messagePublisher.Publish(message, exchangeName, routingKeys);
     }
 
-    public async Task<EventStore.Contracts.Events.EventsSnapshot> ReadFirstEventsSnapshotAsync(CancellationToken cancellationToken)
+    public async Task<Contracts.Events.EventsSnapshot> ReadFirstEventsSnapshotAsync(CancellationToken cancellationToken)
     {
         return await eventsSnapshotConsumer.ReadFirstDtoAsync(cancellationToken);
     }

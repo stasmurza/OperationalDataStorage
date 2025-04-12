@@ -1,11 +1,9 @@
 ﻿using OperationalDataStorage.Application.Ohlcs;
 using OperationalDataStorage.Application.Repositories.Abstractions;
-using OperationalDataStorage.Persistence.Repositories;
 using OperationalDataStorage.Infrastructure;
 using Microsoft.OpenApi.Models;
 using OperationalDataStorage.Domain.Entities.Positions;
 using OperationalDataStorage.Domain.Entities.Ohlcs;
-using OperationalDataStorage.Domain.Entities.Interests;
 using OperationalDataStorage.Infrastructure.Persistence;
 using OperationalDataStorage.Infrastructure.Persistence.Repositories;
 using OperationalDataStorage.Infrastructure.Models.Settings;
@@ -32,7 +30,6 @@ public static class OperationalDataStorageServices
         services.Configure<RabbitMqClientSettings>(configuration.GetSection(nameof(RabbitMqClientSettings)));
         services.Configure<EventsSnapshotSettings>(configuration.GetSection(nameof(EventsSnapshotSettings)));
         services.AddSingleton<IContext, DbContext>();
-        services.AddSingleton<IRepository<Interest>, InterestRepository>();
         services.AddSingleton<IRepository<Ohlc>, OhlcRepository>();
         services.AddSingleton<IRepository<Position>, PositionRepository>();
         services.AddSingleton<EventsSnapshotConsumer>();

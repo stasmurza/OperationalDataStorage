@@ -1,24 +1,20 @@
-﻿using EventStore.Contracts.Orders;
-using EventStore.Contracts.TradeRequests;
+﻿using OperationalDataStorage.Contracts.Positions;
 
 namespace OperationalDataStorage.Service.Tests.Factories;
 
 public static class FilledOrderFactory
 {
-    public static FilledOrder GenerateFilledOrder(TradeRequest tradeRequest)
+    public static FilledOrder GenerateFilledOrder(string symbol, string strategy, Contracts.Direction direction, decimal volume, decimal price)
     {
         return new FilledOrder()
         {
-            EventId = Guid.NewGuid(),
-            CorrelationId = Guid.NewGuid(),
-            EventDateTime = DateTime.UtcNow,
             OrderId = Guid.NewGuid(),
-            Symbol = tradeRequest.Symbol,
-            Strategy = tradeRequest.Strategy,
-            Direction = tradeRequest.Direction,
-            FilledQuantity = tradeRequest.Quantity,
-            FinalPositionQuantity = tradeRequest.FinalPositionQuantity,
-            AverageFillPrice = tradeRequest.Price,
+            Symbol = symbol,
+            Strategy = strategy,
+            Direction = direction,
+            FilledQuantity = volume,
+            FinalPositionQuantity = volume,
+            AverageFillPrice = price,
         };
     }
 }

@@ -1,4 +1,4 @@
-﻿using EventStore.Contracts.Ohlcs;
+﻿using OperationalDataStorage.Contracts.Ohlcs;
 
 namespace OperationalDataStorage.Service.Tests.Factories;
 
@@ -18,9 +18,6 @@ public static class OhlcFactory
         {
             yield return new Ohlc()
             {
-                EventId = Guid.NewGuid(),
-                EventDateTime = DateTime.UtcNow,
-                CorrelationId = Guid.NewGuid(),
                 StartTime = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0),
                 EndTime = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59),
                 Symbol = symbol,

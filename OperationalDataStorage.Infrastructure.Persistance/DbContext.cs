@@ -1,8 +1,6 @@
 ﻿using OperationalDataStorage.Application.Repositories.Abstractions;
-using OperationalDataStorage.Domain.Entities.Interests;
 using OperationalDataStorage.Domain.Entities.Ohlcs;
 using OperationalDataStorage.Domain.Entities.Positions;
-using OperationalDataStorage.Persistence;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using OperationalDataStorage.Infrastructure.Models.Settings;
@@ -11,8 +9,6 @@ namespace OperationalDataStorage.Infrastructure.Persistence;
 
 public class DbContext : IContext, IDisposable
 {
-    public IMongoCollection<Interest> Interests => Database.GetCollection<Interest>(CollectionNames.Interests);
-
     public IMongoCollection<Ohlc> Ohlcs => Database.GetCollection<Ohlc>(CollectionNames.Ohlcs);
 
     public IMongoCollection<Position> Positions => Database.GetCollection<Position>(CollectionNames.Positions);
