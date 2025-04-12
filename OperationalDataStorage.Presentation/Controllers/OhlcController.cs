@@ -10,7 +10,7 @@ namespace OperationalDataStorage.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class OhlcsController(IMediator mediator, IMapper mapper) : ControllerBase
+public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
     private readonly IMapper mapper = mapper;

@@ -10,7 +10,7 @@ namespace OperationalDataStorage.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InterestsController(IMediator mediator, IMapper mapper) : ControllerBase
+public class InterestController(IMediator mediator, IMapper mapper) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
     private readonly IMapper mapper = mapper;
