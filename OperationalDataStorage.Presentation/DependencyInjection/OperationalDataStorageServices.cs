@@ -33,6 +33,7 @@ public static class OperationalDataStorageServices
         services.AddSingleton<IRepository<Ohlc>, OhlcRepository>();
         services.AddSingleton<IRepository<Position>, PositionRepository>();
         services.AddSingleton<EventsSnapshotConsumer>();
+        services.AddTransient<EventStore.Core.Services.SettingsValidator>();
         services.AddHostedService<HostedServices.MessageConsumersHostedService>();
 
         return services;
