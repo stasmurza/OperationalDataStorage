@@ -8,66 +8,43 @@ public static class OhlcExtensions
     public static void Apply(this Ohlc ohlc, OhlcDto dto)
     {
         if (ohlc.Symbol != dto.Symbol) throw new ArgumentOutOfRangeException(nameof(dto));
+        if (ohlc.Volume >= dto.Volume) return;
 
-        if (dto.StartTime <= ohlc.StartTime)
-        {
-            ohlc.StartTime = dto.StartTime;
-            ohlc.Open = dto.Open;
-        };
-
-        if (dto.EndTime >= ohlc.EndTime)
-        {
-            ohlc.EndTime = dto.EndTime;
-            ohlc.Close = dto.Close;
-        };
-
-        ohlc.High = Math.Max(ohlc.High, dto.High);
-        ohlc.Low = Math.Min(ohlc.Low, dto.Low);
-        ohlc.Volume += dto.Volume;
+        ohlc.StartTime = dto.StartTime;
+        ohlc.EndTime = dto.EndTime;
+        ohlc.Open = dto.Open;
+        ohlc.Close = dto.Close;
+        ohlc.High = dto.High;
+        ohlc.Low = dto.Low;
+        ohlc.Volume = dto.Volume;
     }
 
     public static void Apply(this Ohlc result, Ohlc ohlc)
     {
         if (result.Symbol != ohlc.Symbol) throw new ArgumentOutOfRangeException(nameof(ohlc));
-        if (ohlc.EndTime <= result.EndTime) return;
+        if (result.Volume >= ohlc.Volume) return;
 
-        if (result.StartTime <= ohlc.StartTime)
-        {
-            result.StartTime = ohlc.StartTime;
-            result.Open = ohlc.Open;
-        };
-
-        if (result.EndTime >= ohlc.EndTime)
-        {
-            result.EndTime = ohlc.EndTime;
-            result.Close = ohlc.Close;
-        };
-
-        result.High = Math.Max(ohlc.High, ohlc.High);
-        result.Low = Math.Min(ohlc.Low, ohlc.Low);
-        result.Volume += ohlc.Volume;
+        result.StartTime = ohlc.StartTime;
+        result.EndTime = ohlc.EndTime;
+        result.Open = ohlc.Open;
+        result.Close = ohlc.Close;
+        result.High = ohlc.High;
+        result.Low = ohlc.Low;
+        result.Volume = ohlc.Volume;
     }
 
     public static void Apply(this Ohlc result, AddOhlcInput input)
     {
         if (result.Symbol != input.Symbol) throw new ArgumentOutOfRangeException(nameof(input));
-        if (input.EndTime <= result.EndTime) return;
+        if (result.Volume >= input.Volume) return;
 
-        if (result.StartTime <= input.StartTime)
-        {
-            result.StartTime = input.StartTime;
-            result.Open = input.Open;
-        };
-
-        if (result.EndTime >= input.EndTime)
-        {
-            result.EndTime = input.EndTime;
-            result.Close = input.Close;
-        };
-
-        result.High = Math.Max(input.High, input.High);
-        result.Low = Math.Min(input.Low, input.Low);
-        result.Volume += input.Volume;
+        result.StartTime = input.StartTime;
+        result.EndTime = input.EndTime;
+        result.Open = input.Open;
+        result.Close = input.Close;
+        result.High = input.High;
+        result.Low = input.Low;
+        result.Volume = input.Volume;
     }
 
     public static OhlcDto ToDto(this Ohlc ohlc) => new()
@@ -83,16 +60,6 @@ public static class OhlcExtensions
         Close = ohlc.Close,
         Volume = ohlc.Volume,
     };
-
-    public static string GetKey(this Ohlc ohlc)
-    {
-        return ohlc.Interval.ToString() + GetStartDateTime(ohlc.StartTime, ohlc.Interval).ToString() + ohlc.Symbol;
-    }
-
-    public static string GetKey(Domain.Entities.Ohlcs.TimeInterval timeInterval, DateTime intervalStart, string symbol)
-    {
-        return timeInterval.ToString() + intervalStart.ToString() + symbol;
-    }
 
     public static DateTime GetStartDateTime(DateTime startTime, Domain.Entities.Ohlcs.TimeInterval timeInterval) => timeInterval switch
     {
