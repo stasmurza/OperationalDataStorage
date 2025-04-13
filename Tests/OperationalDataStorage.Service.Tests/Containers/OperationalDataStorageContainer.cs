@@ -2,7 +2,6 @@
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Images;
-using Microsoft.Extensions.Configuration;
 using OperationalDataStorage.Service.Tests.Containers.Abstractions;
 using System.Net;
 

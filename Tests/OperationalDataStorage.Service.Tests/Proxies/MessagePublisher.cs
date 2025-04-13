@@ -31,7 +31,7 @@ public sealed class MessagePublisher : IMessagePublisher
 
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
-        channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, durable: false, autoDelete: false);
+        channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, durable: true, autoDelete: false);
 
         var json = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(json);
@@ -58,7 +58,7 @@ public sealed class MessagePublisher : IMessagePublisher
 
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
-        channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, durable: false, autoDelete: true);
+        channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, durable: true, autoDelete: false);
 
         foreach (var message in messages)
         {

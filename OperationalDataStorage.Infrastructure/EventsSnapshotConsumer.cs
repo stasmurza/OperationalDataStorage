@@ -52,8 +52,8 @@ public class EventsSnapshotConsumer : IDisposable
 
         connection = factory.CreateConnection();
         channel = connection.CreateModel();
-        channel.ExchangeDeclare(eventsSnapshotSettings.ExchangeName, ExchangeType.Direct, durable: false, autoDelete: false);
-        channel.QueueDeclare(eventsSnapshotSettings.QueueName, durable: false, autoDelete: false);
+        channel.ExchangeDeclare(eventsSnapshotSettings.ExchangeName, ExchangeType.Direct, durable: true, autoDelete: false);
+        channel.QueueDeclare(eventsSnapshotSettings.QueueName, durable: true, autoDelete: false);
         foreach (var bindingKey in this.eventsSnapshotSettings.RoutingKeys)
         {
             channel.QueueBind(
@@ -68,7 +68,7 @@ public class EventsSnapshotConsumer : IDisposable
         consumer.Received += Consumer_Received;
         channel.BasicConsume(
             queue: eventsSnapshotSettings.QueueName,
-            autoAck: true,
+            autoAck: false,
             consumer: consumer);
     }
 
@@ -86,8 +86,10 @@ public class EventsSnapshotConsumer : IDisposable
             var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
             foreach (var group in dtosByEventType)
             {
-                ProcessEvents(group.Key, group.Select(i => i.EventData));
+                var task = ProcessEventsAsync(group.Key, group.Select(i => i.EventData));
+                task.Wait();
             }
+            channel.BasicAck(eventArgs.DeliveryTag, multiple: false);
         }
         catch (Exception exception)
         {
@@ -122,7 +124,7 @@ public class EventsSnapshotConsumer : IDisposable
         }
     }
 
-    private void ProcessEvents(EventType eventType, IEnumerable<string> events)
+    private async Task ProcessEventsAsync(EventType eventType, IEnumerable<string> events)
     {
         switch (eventType)
         {
@@ -130,7 +132,7 @@ public class EventsSnapshotConsumer : IDisposable
                 {
                     var dtos = events.Select(Deserialize<Application.Models.Ohlcs.OhlcDto>);
                     var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
-                    mediator.Send(input);
+                    await mediator.Send(input);
                 }
                 break;
 
@@ -138,7 +140,7 @@ public class EventsSnapshotConsumer : IDisposable
                 {
                     var dtos = events.Select(Deserialize<Application.Models.Positions.FilledOrderDto>);
                     var input = new Application.Models.Positions.AddFilledOrderInput { Dtos = dtos };
-                    mediator.Send(input);
+                    await mediator.Send(input);
                 }
                 break;
 
