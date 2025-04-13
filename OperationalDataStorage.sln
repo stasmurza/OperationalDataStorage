@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationalDataStorage.Doma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationalDataStorage.Presentation", "OperationalDataStorage.Presentation\OperationalDataStorage.Presentation.csproj", "{AB657750-194E-48BA-A0E3-6ABD82834DE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationalDataStorage.Service.Tests", "Tests\OperationalDataStorage.Service.Tests\OperationalDataStorage.Service.Tests.csproj", "{E2DA1808-4CB1-4476-BD2D-E04BD1D3C6AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationalDataStorage.Service.Tests", "Tests\OperationalDataStorage.Service.Tests\OperationalDataStorage.Service.Tests.csproj", "{E2DA1808-4CB1-4476-BD2D-E04BD1D3C6AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationalDataStorage.Infrastructure.Models", "OperationalDataStorage.Infrastructure.Models\OperationalDataStorage.Infrastructure.Models.csproj", "{78C046A0-B49D-45C6-8069-7E8263B03169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationalDataStorage.Infrastructure.Models", "OperationalDataStorage.Infrastructure.Models\OperationalDataStorage.Infrastructure.Models.csproj", "{78C046A0-B49D-45C6-8069-7E8263B03169}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E88587AB-E943-4350-866A-D60855335817}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
