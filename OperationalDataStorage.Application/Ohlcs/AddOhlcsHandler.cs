@@ -36,9 +36,9 @@ public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> 
         var ohlcs = OhlcAggregator.Process(dtos);
         foreach (var ohlc in ohlcs)
         {
-            var intervalStart = OhlcExtensions.GetStartDateTime(ohlc.StartTime, ohlc.Interval);
-            var intervalEnd = OhlcExtensions.GetEndDateTime(ohlc.EndTime, ohlc.Interval);
-            var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime >= intervalStart && i.EndTime <= intervalEnd && i.Interval == ohlc.Interval && i.Symbol == ohlc.Symbol);
+            var intervalStart = ohlc.GetStartDateTime();
+            var intervalEnd = ohlc.GetEndDateTime();
+            var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime == intervalStart && i.EndTime == intervalEnd && i.Interval == ohlc.Interval && i.Symbol == ohlc.Symbol);
             entity?.Apply(ohlc);
             if (entity is null) await ohlcRepository.CreateAsync(ohlc);
             else await ohlcRepository.UpdateAsync(ohlc);

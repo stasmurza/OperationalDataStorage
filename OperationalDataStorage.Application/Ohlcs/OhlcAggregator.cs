@@ -10,14 +10,6 @@ public class OhlcAggregator()
     {
         if (!dtos.Any()) return [];
 
-        var timeIntervals = new List<Domain.Entities.Ohlcs.TimeInterval>()
-        {
-            Domain.Entities.Ohlcs.TimeInterval.Days1,
-            Domain.Entities.Ohlcs.TimeInterval.Hours1,
-            Domain.Entities.Ohlcs.TimeInterval.Minutes1
-        };
-
-        var min1Dtos = dtos.Where(i => i.Interval == Models.Ohlcs.TimeInterval.Minutes1);
         var aggregates = new Dictionary<string, Ohlc>();
         foreach (var dto in dtos)
         {

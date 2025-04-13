@@ -61,19 +61,19 @@ public static class OhlcExtensions
         Volume = ohlc.Volume,
     };
 
-    public static DateTime GetStartDateTime(DateTime startTime, Domain.Entities.Ohlcs.TimeInterval timeInterval) => timeInterval switch
+    public static DateTime GetStartDateTime(this Ohlc ohlc) => ohlc.Interval switch
     {
-        Domain.Entities.Ohlcs.TimeInterval.Days1 => startTime.Date,
-        Domain.Entities.Ohlcs.TimeInterval.Hours1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0),
-        Domain.Entities.Ohlcs.TimeInterval.Minutes1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0),
-        _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), $"Not expected direction value: {timeInterval}"),
+        Domain.Entities.Ohlcs.TimeInterval.Days1 => ohlc.StartTime.Date,
+        Domain.Entities.Ohlcs.TimeInterval.Hours1 => new DateTime(ohlc.StartTime.Year, ohlc.StartTime.Month, ohlc.StartTime.Day, ohlc.StartTime.Hour, 0, 0),
+        Domain.Entities.Ohlcs.TimeInterval.Minutes1 => new DateTime(ohlc.StartTime.Year, ohlc.StartTime.Month, ohlc.StartTime.Day, ohlc.StartTime.Hour, 0, 0),
+        _ => throw new ArgumentOutOfRangeException(nameof(ohlc.Interval), $"Not expected direction value: {ohlc.Interval}"),
     };
 
-    public static DateTime GetEndDateTime(DateTime startTime, Domain.Entities.Ohlcs.TimeInterval timeInterval) => timeInterval switch
+    public static DateTime GetEndDateTime(this Ohlc ohlc) => ohlc.Interval switch
     {
-        Domain.Entities.Ohlcs.TimeInterval.Days1 => startTime.Date.AddDays(1).AddTicks(-1),
-        Domain.Entities.Ohlcs.TimeInterval.Hours1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0).AddHours(1).AddTicks(-1),
-        Domain.Entities.Ohlcs.TimeInterval.Minutes1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0).AddMinutes(1).AddTicks(-1),
-        _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), $"Not expected direction value: {timeInterval}"),
+        Domain.Entities.Ohlcs.TimeInterval.Days1 => ohlc.StartTime.Date.AddDays(1).AddTicks(-1),
+        Domain.Entities.Ohlcs.TimeInterval.Hours1 => new DateTime(ohlc.StartTime.Year, ohlc.StartTime.Month, ohlc.StartTime.Day, ohlc.StartTime.Hour, 0, 0).AddHours(1).AddTicks(-1),
+        Domain.Entities.Ohlcs.TimeInterval.Minutes1 => new DateTime(ohlc.StartTime.Year, ohlc.StartTime.Month, ohlc.StartTime.Day, ohlc.StartTime.Hour, 0, 0).AddMinutes(1).AddTicks(-1),
+        _ => throw new ArgumentOutOfRangeException(nameof(ohlc.Interval), $"Not expected direction value: {ohlc.Interval}"),
     };
 }

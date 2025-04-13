@@ -15,7 +15,7 @@ public class AddOhlcHandler(IRepository<Ohlc> ohlcRepository) : IRequestHandler<
         var interval = Enum.Parse<Domain.Entities.Ohlcs.TimeInterval>(input.Interval.ToString());
         var intervalStart = input.GetStartDateTime();
         var intervalEnd = input.GetEndDateTime();
-        var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime >= intervalStart && i.EndTime <= intervalEnd && i.Interval == interval && i.Symbol == input.Symbol);
+        var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime == intervalStart && i.EndTime == intervalEnd && i.Interval == interval && i.Symbol == input.Symbol);
 
         if (entity is null)
         {
