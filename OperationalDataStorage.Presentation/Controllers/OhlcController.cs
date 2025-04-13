@@ -23,14 +23,14 @@ public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
     /// <param name="end" example="2009-06-16T13:45:00">End date and time, UTC.</param>
     /// <param name="granularity" example="Days1">Granularity.</param>
     /// <returns><see cref="GetOhlcsResponse"/></returns>
-    [HttpGet("{symbol}/{start}/{end}/{granularity}")]
+    [HttpGet("{symbol}/{granularity}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<GetOhlcsResponse> GetAsync(
         [FromRoute] string symbol,
-        [FromRoute] DateTime start,
-        [FromRoute] DateTime end,
-        [FromRoute] Contracts.Ohlcs.TimeInterval granularity)
+        [FromRoute] Contracts.Ohlcs.TimeInterval granularity,
+        [FromQuery] DateTime start,
+        [FromQuery] DateTime end)
     {
         var input = new GetOhlcsInput
         {
@@ -45,6 +45,27 @@ public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
             Ohlcs = output.Ohlcs.Select(mapper.Map<Contracts.Ohlcs.Ohlc>)
         };
     }
+
+    ///// <summary>
+    ///// Returns ohlcs.
+    ///// </summary>
+    ///// <param name="symbol" example="BTC/USDT">Symbol.</param>
+    ///// <param name="start" example="2009-06-15T13:45:00">Start date and time, UTC.</param>
+    ///// <param name="end" example="2009-06-16T13:45:00">End date and time, UTC.</param>
+    ///// <param name="granularity" example="Days1">Granularity.</param>
+    ///// <returns><see cref="GetOhlcsResponse"/></returns>
+    //[HttpGet("{symbol}")]
+    //[ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
+    //[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    //public async Task<GetOhlcsResponse> GetAsync(
+    //    [FromRoute] string symbol,
+    //    [FromQuery] DateTime start)
+    //{
+    //    return new GetOhlcsResponse
+    //    {
+    //        //Ohlcs = output.Ohlcs.Select(mapper.Map<Contracts.Ohlcs.Ohlc>)
+    //    };
+    //}
 
     /// <summary>
     /// Creates or updates OHLC item and returns created company's data.

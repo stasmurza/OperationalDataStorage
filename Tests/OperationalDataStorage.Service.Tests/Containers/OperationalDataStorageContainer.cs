@@ -2,6 +2,7 @@
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Images;
+using OperationalDataStorage.Infrastructure.Models.Settings;
 using OperationalDataStorage.Service.Tests.Containers.Abstractions;
 using System.Net;
 
@@ -50,6 +51,8 @@ public sealed class OperationalDataStorageContainer : ITestContainer
     {
         await container.StopAsync(cancellationToken).ConfigureAwait(false);
     }
+
+    public int GetMappedPort(int port) => container.GetMappedPublicPort(port);
 
     public async ValueTask DisposeAsync()
     {

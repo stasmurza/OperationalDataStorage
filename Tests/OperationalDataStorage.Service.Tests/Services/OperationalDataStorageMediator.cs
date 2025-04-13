@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OperationalDataStorage.Contracts.Ohlcs;
-using OperationalDataStorage.Domain.Entities.Ohlcs;
 using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
 using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq.Consumers.Subscriptions;
 using OperationalDataStorage.Service.Tests.Environments;
 using OperationalDataStorage.Service.Tests.Proxies;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Web;
 
 namespace OperationalDataStorage.Service.Tests.Services;
 
@@ -66,10 +66,11 @@ public sealed class OperationalDataStorageMediator : IDisposable
     {
         HttpClient httpClient = new()
         {
-            BaseAddress = new Uri("http://OperationalDataStorage.Service.Tests.Containers.OperationalDataStorageContainer:8080"),
+            BaseAddress = new Uri($"http://localhost:{TestEnvironment.OperationalDataStorageContainer.GetMappedPort(8080)}"),
         };
 
-        using HttpResponseMessage response = await httpClient.GetAsync($"todos/{symbol}/{start:0}/{end:0}/{granularity}", cancellationToken);
+        //using HttpResponseMessage response = await httpClient.GetAsync($"/ohlc/{symbol}/{granularity}?{start.Date}/{end.Date}/", cancellationToken);
+        using HttpResponseMessage response = await httpClient.GetAsync($"/ohlc/{symbol}/{granularity}?start={HttpUtility.UrlEncode(start.Date.ToString())}&end={HttpUtility.UrlEncode(end.Date.ToString())}", cancellationToken);
         response.EnsureSuccessStatusCode();
         var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
 

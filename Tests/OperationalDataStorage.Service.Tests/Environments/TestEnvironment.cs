@@ -16,7 +16,7 @@ public sealed class TestEnvironment : IAsyncDisposable
 
     public DatabaseContainer DatabaseContainer { get; }
 
-    public OperationalDataStorageContainer EventStoreContainer { get; }
+    public OperationalDataStorageContainer OperationalDataStorageContainer { get; }
 
     public TestEnvironment()
     {
@@ -29,7 +29,7 @@ public sealed class TestEnvironment : IAsyncDisposable
         DockerNetwork = new DockerNetwork();
         RabbitMqContainer = new RabbitMqContainer(DockerNetwork, Configuration);
         DatabaseContainer = new DatabaseContainer(DockerNetwork, Configuration);
-        EventStoreContainer = new OperationalDataStorageContainer(DockerNetwork);
+        OperationalDataStorageContainer = new OperationalDataStorageContainer(DockerNetwork);
     }
 
     public async Task SetupAsync(CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ public sealed class TestEnvironment : IAsyncDisposable
             await DockerNetwork.CreateAsync(cancellationToken).ConfigureAwait(false);
             await RabbitMqContainer.StartAsync(cancellationToken).ConfigureAwait(false);
             await DatabaseContainer.StartAsync(cancellationToken).ConfigureAwait(false);
-            await EventStoreContainer.StartAsync(cancellationToken).ConfigureAwait(false);
+            await OperationalDataStorageContainer.StartAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -50,7 +50,7 @@ public sealed class TestEnvironment : IAsyncDisposable
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        await EventStoreContainer.StopAsync(cancellationToken).ConfigureAwait(false);
+        await OperationalDataStorageContainer.StopAsync(cancellationToken).ConfigureAwait(false);
         await DatabaseContainer.StopAsync(cancellationToken).ConfigureAwait(false);
         await RabbitMqContainer.StopAsync(cancellationToken).ConfigureAwait(false);
         await DockerNetwork.DeleteAsync(cancellationToken).ConfigureAwait(false);
@@ -58,7 +58,7 @@ public sealed class TestEnvironment : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await EventStoreContainer.DisposeAsync().ConfigureAwait(false);
+        await OperationalDataStorageContainer.DisposeAsync().ConfigureAwait(false);
         await DatabaseContainer.DisposeAsync().ConfigureAwait(false);
         await RabbitMqContainer.DisposeAsync().ConfigureAwait(false);
         await DockerNetwork.DisposeAsync().ConfigureAwait(false);

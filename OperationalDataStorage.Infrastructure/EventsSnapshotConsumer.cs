@@ -82,7 +82,7 @@ public class EventsSnapshotConsumer : IDisposable
             var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, jsonSerializerOptions);
             if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
             if (!eventsSnapshort.NewEvents.Any()) return;
-            LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, jsonSerializerOptions)));
+            //LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, jsonSerializerOptions)));
             var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
             foreach (var group in dtosByEventType)
             {

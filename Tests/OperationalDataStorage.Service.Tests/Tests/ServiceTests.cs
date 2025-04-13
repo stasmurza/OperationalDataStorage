@@ -35,10 +35,10 @@ public class ServiceTests
         // Act.
         mediator.Publish(eventsSnapshot, mediator.EventsSnapshotSettings.ExchangeName, mediator.EventsSnapshotSettings.RoutingKeys);
         cancellationTokenSource = new CancellationTokenSource(testEnvironment.TestsSettings.ActTimeoutMs);
+        var receivedOhlc = await mediator.GetOhlcsAsync(symbol, startInterval, endInterval, TimeInterval.Days1, cancellationTokenSource.Token);
         await testEnvironment.StopAsync(CancellationToken.None);
 
         // Assert.
-        var receivedOhlc = await mediator.GetOhlcsAsync(symbol, startInterval, endInterval, TimeInterval.Days1, cancellationTokenSource.Token);
         var dates = ohlcs.Select(i => i.StartTime.Date).Distinct().ToArray();
         for (var i = 0; i < dates.Length; i++)
         {
