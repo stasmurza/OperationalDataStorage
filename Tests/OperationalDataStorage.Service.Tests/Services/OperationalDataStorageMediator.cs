@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace OperationalDataStorage.Service.Tests.Services;
 
-public sealed class EventStoreMediator : IDisposable
+public sealed class OperationalDataStorageMediator : IDisposable
 {
     public TestEnvironment TestEnvironment { get; }
 
@@ -22,7 +22,7 @@ public sealed class EventStoreMediator : IDisposable
     private readonly MessagePublisher messagePublisher;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public EventStoreMediator(TestEnvironment testEnvironment)
+    public OperationalDataStorageMediator(TestEnvironment testEnvironment)
     {
         TestEnvironment = testEnvironment;
 
@@ -71,7 +71,7 @@ public sealed class EventStoreMediator : IDisposable
 
         using HttpResponseMessage response = await httpClient.GetAsync($"todos/{symbol}/{start:0}/{end:0}/{granularity}", cancellationToken);
         response.EnsureSuccessStatusCode();
-        var jsonResponse = await response.Content.ReadAsStringAsync();
+        var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
 
         return JsonSerializer.Deserialize<GetOhlcsResponse>(jsonResponse, jsonSerializerOptions);
     }

@@ -1,4 +1,3 @@
-using OperationalDataStorage.Contracts.Positions;
 using OperationalDataStorage.Service.Tests.Environments;
 using OperationalDataStorage.Service.Tests.Factories;
 using OperationalDataStorage.Service.Tests.Services;
@@ -27,7 +26,7 @@ public class ServiceTests
         await using var testEnvironment = new TestEnvironment();
         var cancellationTokenSource = new CancellationTokenSource(testEnvironment.TestsSettings.ArrangeTimeoutMs);
         await testEnvironment.SetupAsync(cancellationTokenSource.Token);
-        using var mediator = new EventStoreMediator(testEnvironment);
+        using var mediator = new OperationalDataStorageMediator(testEnvironment);
         var endInterval = DateTime.UtcNow;
         var startInterval = endInterval.Date.AddDays(-5).Date;
         var ohlcs = OhlcFactory.CreateOhlcs(symbol, startInterval, endInterval, TimeInterval.Minutes1, 10000, 100000).ToArray();
