@@ -39,6 +39,8 @@ public class ServiceTests
         await testEnvironment.StopAsync(CancellationToken.None);
 
         // Assert.
+        receivedOhlc.Should().NotBeNull();
+        receivedOhlc.Ohlcs.Should().NotBeNull();
         var dates = ohlcs.Select(i => i.StartTime.Date).Distinct().ToArray();
         for (var i = 0; i < dates.Length; i++)
         {

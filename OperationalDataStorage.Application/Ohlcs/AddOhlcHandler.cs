@@ -13,7 +13,10 @@ public class AddOhlcHandler(IRepository<Ohlc> ohlcRepository) : IRequestHandler<
     public async Task<AddOhlcOutput> Handle(AddOhlcInput input, CancellationToken cancellationToken)
     {
         var interval = Enum.Parse<Domain.Entities.Ohlcs.TimeInterval>(input.Interval.ToString());
-        var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime == input.StartTime && i.Symbol == input.Symbol && i.Interval == interval);
+        var intervalStart = OhlcExtensions.GetStartDateTime(input.StartTime, interval);
+        var intervalEnd = OhlcExtensions.GetEndDateTime(input.EndTime, interval);
+        var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime >= intervalStart && i.EndTime <= intervalEnd && i.Interval == interval && i.Symbol == input.Symbol);
+
         if (entity is null)
         {
             entity = Create(input);

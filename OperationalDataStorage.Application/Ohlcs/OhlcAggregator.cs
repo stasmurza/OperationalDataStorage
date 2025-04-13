@@ -10,58 +10,59 @@ public class OhlcAggregator()
     {
         if (!dtos.Any()) return [];
 
-        var dictionary = dtos
-            .GroupBy(i => new
-            {
-                i.StartTime,
-                i.Symbol
-            })
-            .ToDictionary(i => i.Key, i => i.ToList());
-
-        var intervals = new List<Domain.Entities.Ohlcs.TimeInterval>()
+        var timeIntervals = new List<Domain.Entities.Ohlcs.TimeInterval>()
         {
             Domain.Entities.Ohlcs.TimeInterval.Days1,
             Domain.Entities.Ohlcs.TimeInterval.Hours1,
             Domain.Entities.Ohlcs.TimeInterval.Minutes1
         };
 
+        var min1Dtos = dtos.Where(i => i.Interval == Models.Ohlcs.TimeInterval.Minutes1);
         var aggregates = new Dictionary<string, Ohlc>();
-        foreach (var keyValuePair in dictionary)
+        foreach (var dto in min1Dtos)
         {
-            var exchangeRates = keyValuePair.Value;
-            if (exchangeRates.Count == 0) continue;
-            UpdateAggregates(aggregates, keyValuePair.Key.StartTime, keyValuePair.Key.Symbol, intervals, exchangeRates);
+            foreach (var timeInterval in timeIntervals)
+            {
+                var intervalStart = GetStartDateTime(dto.StartTime, timeInterval);
+                var key = timeInterval.ToString() + intervalStart.ToString() + dto.Symbol;
+                if (!aggregates.TryGetValue(key, out var aggregate))
+                {
+                    aggregate = Create(dto, timeInterval);
+                    aggregates.Add(key, aggregate);
+                }
+                else aggregate.Apply(dto);
+            }
         }
 
         return aggregates.Values;
     }
 
-    private static void UpdateAggregates(Dictionary<string, Ohlc> aggregates, DateTime startTime, string symbol, IEnumerable<Domain.Entities.Ohlcs.TimeInterval> timeIntervals, IEnumerable<OhlcDto> dtos)
-    {
-        foreach (var timeInterval in timeIntervals)
-        {
-            var applicableDtos = dtos.Where(i => (int)i.Interval <= (int)timeInterval);
-            if (!applicableDtos.Any()) continue;
-            
-            var key = symbol + startTime.ToString() + timeInterval;
-            foreach (var dto in applicableDtos)
-            {
-                if (!aggregates.TryGetValue(key, out var aggregate)) aggregate = Create(dto, startTime, timeInterval);
-                else aggregate.Apply(dto);
-            }
-        }
-    }
-
-    private static Ohlc Create(OhlcDto dto, DateTime startTime, Domain.Entities.Ohlcs.TimeInterval interval) => new()
+    private static Ohlc Create(OhlcDto dto, Domain.Entities.Ohlcs.TimeInterval interval) => new()
     {
         Symbol = dto.Symbol,
         Interval = interval,
-        StartTime = startTime,
+        StartTime = dto.StartTime,
         EndTime = dto.EndTime,
         Low = dto.Low,
         High = dto.High,
         Open = dto.Open,
         Close = dto.Close,
         Volume = dto.Volume,
+    };
+
+    private static DateTime GetStartDateTime(DateTime startTime, Domain.Entities.Ohlcs.TimeInterval timeInterval) => timeInterval switch
+    {
+        Domain.Entities.Ohlcs.TimeInterval.Days1 => startTime.Date,
+        Domain.Entities.Ohlcs.TimeInterval.Hours1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0),
+        Domain.Entities.Ohlcs.TimeInterval.Minutes1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0),
+        _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), $"Not expected direction value: {timeInterval}"),
+    };
+    
+    private static DateTime GetEndDateTime(DateTime startTime, Domain.Entities.Ohlcs.TimeInterval timeInterval) => timeInterval switch
+    {
+        Domain.Entities.Ohlcs.TimeInterval.Days1 => startTime.Date.AddDays(1).AddTicks(-1),
+        Domain.Entities.Ohlcs.TimeInterval.Hours1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0).AddHours(1).AddTicks(-1),
+        Domain.Entities.Ohlcs.TimeInterval.Minutes1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0).AddMinutes(1).AddTicks(-1),
+        _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), $"Not expected direction value: {timeInterval}"),
     };
 }
