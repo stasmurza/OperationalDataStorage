@@ -61,7 +61,7 @@ public sealed class OperationalDataStorageMediator : IDisposable
         string symbol,
         DateTime start,
         DateTime end,
-        Contracts.Ohlcs.TimeInterval granularity,
+        TimeInterval granularity,
         CancellationToken cancellationToken)
     {
         HttpClient httpClient = new()

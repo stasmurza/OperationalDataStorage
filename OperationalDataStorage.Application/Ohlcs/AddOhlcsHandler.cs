@@ -4,6 +4,7 @@ using OperationalDataStorage.Application.Models.Ohlcs;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OperationalDataStorage.Domain.Entities.Ohlcs;
+using System.Text.Json;
 
 namespace OperationalDataStorage.Application.Ohlcs;
 
@@ -36,6 +37,7 @@ public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> 
         var ohlcs = OhlcAggregator.Process(dtos);
         foreach (var ohlc in ohlcs)
         {
+            logger.LogInformation("Processing ohlc: {ohlc}", JsonSerializer.Serialize(ohlc));
             var intervalStart = ohlc.GetStartDateTime();
             var intervalEnd = ohlc.GetEndDateTime();
             var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime == intervalStart && i.EndTime == intervalEnd && i.Interval == ohlc.Interval && i.Symbol == ohlc.Symbol);

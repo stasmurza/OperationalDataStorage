@@ -82,7 +82,7 @@ public class EventsSnapshotConsumer : IDisposable
             var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, jsonSerializerOptions);
             if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
             if (!eventsSnapshort.NewEvents.Any()) return;
-            //LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, jsonSerializerOptions)));
+            LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, jsonSerializerOptions)));
             var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
             foreach (var group in dtosByEventType)
             {
@@ -130,7 +130,7 @@ public class EventsSnapshotConsumer : IDisposable
         {
             case EventType.OhlcReceived:
                 {
-                    var dtos = events.Select(Deserialize<Application.Models.Ohlcs.OhlcDto>);
+                    var dtos = events.Select(Deserialize<Contracts.Ohlcs.Ohlc>);
                     var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
                     await mediator.Send(input);
                 }
@@ -149,9 +149,9 @@ public class EventsSnapshotConsumer : IDisposable
         }
     }
 
-    private static T Deserialize<T>(string eventData)
+    private T Deserialize<T>(string eventData)
     {
-        var dto = JsonSerializer.Deserialize<T>(eventData);
+        var dto = JsonSerializer.Deserialize<T>(eventData, jsonSerializerOptions);
         return dto ?? throw new NullReferenceException(nameof(dto));
     }
 

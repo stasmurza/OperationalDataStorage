@@ -8,6 +8,30 @@ namespace OperationalDataStorage.Service.Tests.Factories;
 public static class OhlcFactory
 {
     /// <summary>
+    /// Creates Ohlc.
+    /// </summary>
+    public static Ohlc CreateOhlc(string symbol, DateTime startInterval, DateTime endInterval, TimeInterval granularity, int minPrice, int maxPrice, decimal volume)
+    {
+        var random = new Random();
+        var price1 = random.Next(minPrice, maxPrice);
+        var price2 = random.Next(minPrice, maxPrice);
+        var low = Math.Min(price1, price2);
+        var high = Math.Max(price1, price2);
+        return new Ohlc()
+        {
+            StartTime = startInterval,
+            EndTime = endInterval,
+            Symbol = symbol,
+            Interval = TimeInterval.Days1,
+            Low = low,
+            High = high,
+            Open = random.Next(low, high),
+            Close = random.Next(low, high),
+            Volume = volume,
+        };
+    }
+
+    /// <summary>
     /// Creates Ohlcs.
     /// </summary>
     public static IEnumerable<Ohlc> CreateOhlcs(string symbol, DateTime start, DateTime end, TimeInterval granularity, int minPrice, int maxPrice)
