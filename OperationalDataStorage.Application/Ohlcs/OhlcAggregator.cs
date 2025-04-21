@@ -6,7 +6,7 @@ namespace OperationalDataStorage.Application.Ohlcs;
 
 public class OhlcAggregator()
 {
-    public static IEnumerable<Ohlc> Process(IEnumerable<OhlcDto> dtos)
+    public static IEnumerable<Ohlc> Process(IEnumerable<OhlcInputDto> dtos)
     {
         if (!dtos.Any()) return [];
 
@@ -26,7 +26,7 @@ public class OhlcAggregator()
         return aggregates.Values;
     }
 
-    private static Ohlc Create(OhlcDto dto) => new()
+    private static Ohlc Create(OhlcInputDto dto) => new()
     {
         Symbol = dto.Symbol,
         Interval = Enum.Parse<Domain.Entities.Ohlcs.TimeInterval>(dto.Interval.ToString()),

@@ -18,6 +18,7 @@ public class EventsSnapshotConsumer : IDisposable
 {
     private readonly ILogger<EventsSnapshotConsumer> logger;
     private readonly IMediator mediator;
+    private readonly IMapper mapper;
     private readonly RabbitMqClientSettings rabbitMQClientSettings;
     private readonly EventsSnapshotSettings eventsSnapshotSettings;
     private readonly IConnection connection;
@@ -28,6 +29,7 @@ public class EventsSnapshotConsumer : IDisposable
     public EventsSnapshotConsumer(
         ILogger<EventsSnapshotConsumer> logger,
         IMediator mediator,
+        IMapper mapper,
         IOptions<RabbitMqClientSettings> rabbitMQClientOptions,
         IOptions<EventsSnapshotSettings> eventsSnapshotOptions)
     {
@@ -40,6 +42,7 @@ public class EventsSnapshotConsumer : IDisposable
 
         this.logger = logger;
         this.mediator = mediator;
+        this.mapper = mapper;
         this.rabbitMQClientSettings = rabbitMQClientOptions.Value;
         this.eventsSnapshotSettings = eventsSnapshotOptions.Value;
 
@@ -131,7 +134,8 @@ public class EventsSnapshotConsumer : IDisposable
             case EventType.OhlcReceived:
                 {
                     var dtos = events.Select(Deserialize<Contracts.Ohlcs.Ohlc>);
-                    var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = dtos };
+                    var models = dtos.Select(i => mapper.Map<Application.Models.Ohlcs.OhlcInputDto>(i));
+                    var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = models };
                     await mediator.Send(input);
                 }
                 break;

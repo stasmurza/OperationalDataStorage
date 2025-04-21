@@ -13,11 +13,13 @@ public class Ohlc : IEntity
     /// <summary>
     /// Start of the interval time.
     /// </summary>
+    [BsonDateTimeOptions(Representation = BsonType.Document)]
     public required DateTime StartTime { get; set; }
 
     /// <summary>
     /// Time of the last trade.
     /// </summary>
+    [BsonDateTimeOptions(Representation = BsonType.Document)]
     public required DateTime EndTime { get; set; }
 
     /// <summary>

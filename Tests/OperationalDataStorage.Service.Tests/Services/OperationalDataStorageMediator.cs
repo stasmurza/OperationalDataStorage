@@ -45,6 +45,7 @@ public sealed class OperationalDataStorageMediator : IDisposable
 
         jsonSerializerOptions = new JsonSerializerOptions();
         jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        jsonSerializerOptions.PropertyNameCaseInsensitive = true;
     }
 
     public void Publish<T>(T message, string exchangeName, IEnumerable<string> routingKeys)

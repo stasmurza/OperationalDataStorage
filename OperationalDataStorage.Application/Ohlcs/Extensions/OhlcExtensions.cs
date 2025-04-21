@@ -5,7 +5,7 @@ namespace OperationalDataStorage.Application.Ohlcs.Extensions;
 
 public static class OhlcExtensions
 {
-    public static void Apply(this Ohlc ohlc, OhlcDto dto)
+    public static void Apply(this Ohlc ohlc, OhlcInputDto dto)
     {
         if (ohlc.Symbol != dto.Symbol) throw new ArgumentOutOfRangeException(nameof(dto));
         if (ohlc.Volume >= dto.Volume) return;

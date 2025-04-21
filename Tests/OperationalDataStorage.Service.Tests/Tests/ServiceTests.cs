@@ -31,13 +31,14 @@ public class ServiceTests
         await testEnvironment.SetupAsync(cancellationTokenSource.Token);
         using var mediator = new OperationalDataStorageMediator(testEnvironment);
         var startInterval = IntervalDateTimeFactory.GetStartDateTime(Application.Models.Ohlcs.TimeInterval.Days1, DateTime.UtcNow);
-        var endInterval = IntervalDateTimeFactory.GetStartDateTime(Application.Models.Ohlcs.TimeInterval.Days1, startInterval);
+        var endInterval = IntervalDateTimeFactory.GetEndDateTime(Application.Models.Ohlcs.TimeInterval.Days1, startInterval);
         var ohlc1 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1000);
         var ohlc2 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 10001);
         var eventsSnapshot = EventsSnapshotFactory.GenerateEventsSnapshot([ohlc1, ohlc2]);
 
         // Act.
         mediator.Publish(eventsSnapshot, mediator.EventsSnapshotSettings.ExchangeName, mediator.EventsSnapshotSettings.RoutingKeys);
+        await Task.Delay(1000); // Wait for messages to be processed.
         cancellationTokenSource = new CancellationTokenSource(testEnvironment.TestsSettings.ActTimeoutMs);
         var receivedOhlc = await mediator.GetOhlcsAsync(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, cancellationTokenSource.Token);
         await testEnvironment.StopAsync(CancellationToken.None);
@@ -48,21 +49,15 @@ public class ServiceTests
         receivedOhlc.Ohlcs.Should().HaveCount(1);
         var ohlc = receivedOhlc.Ohlcs.First();
 
-        var minPrice = ohlc2.Low;
-        var maxPrice = ohlc2.High;
-        var openPrice = ohlc2.Open;
-        var closePrice = ohlc2.Close;
-        var volume = ohlc2.Volume;
-
         ohlc.Should().NotBeNull();
         ohlc.Symbol.Should().Be(symbol);
         ohlc.Low.Should().Be(ohlc2.Low);
         ohlc.High.Should().Be(ohlc2.High);
         ohlc.Open.Should().Be(ohlc2.Open);
         ohlc.Close.Should().Be(ohlc2.Close);
-        ohlc.StartTime.Date.Should().Be(startInterval);
-        ohlc.EndTime.Date.Should().Be(endInterval);
-        ohlc.Volume.Should().Be(volume);
+        ohlc.StartTime.Should().Be(startInterval);
+        ohlc.EndTime.Should().Be(endInterval);
+        ohlc.Volume.Should().Be(ohlc2.Volume);
         //ohlcs.Should().OnlyContain(i => i.Symbol == symbol);
         //ohlcs.Should().OnlyContain(i => i.Interval == TimeInterval.Days1);
 

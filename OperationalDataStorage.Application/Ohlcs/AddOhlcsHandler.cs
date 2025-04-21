@@ -32,7 +32,7 @@ public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> 
         }
     }
 
-    private async Task HandleInternalAsync(IEnumerable<OhlcDto> dtos)
+    private async Task HandleInternalAsync(IEnumerable<OhlcInputDto> dtos)
     {
         var ohlcs = OhlcAggregator.Process(dtos);
         foreach (var ohlc in ohlcs)
