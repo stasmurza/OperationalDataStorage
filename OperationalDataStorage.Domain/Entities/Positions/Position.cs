@@ -20,5 +20,5 @@ public class Position : IEntity
 
     public required Direction Direction { get; set; }
 
-    public required HashSet<Guid> OrderIds { get; set; }
+    public required HashSet<Order> Orders { get; set; }
 }

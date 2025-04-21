@@ -9,7 +9,7 @@ public static class PositionExtensions
     {
         if (position.Symbol != dto.Symbol) throw new ArgumentOutOfRangeException(nameof(dto));
         if (position.Strategy != dto.Strategy) throw new ArgumentOutOfRangeException(nameof(dto));
-        if (position.OrderIds.Contains(dto.OrderId)) return;
+        if (position.Orders.Any(i => i.OrderId == dto.OrderId)) return;
 
         var positionAmount = position.EntryPrice * position.Quantity;
         var tradeAmount = dto.AverageFillPrice * dto.FilledQuantity;
@@ -27,7 +27,7 @@ public static class PositionExtensions
             position.Direction = positionAmount >= tradeAmount ? position.Direction : Enum.Parse<Domain.Entities.Direction>(dto.Direction.ToString());
         }
 
-        position.OrderIds.Add(dto.OrderId);
+        position.Orders.Add(new Order { OrderId = dto.OrderId });
     }
 
     public static PositionDto ToDto(this Position position) => new()
@@ -38,6 +38,6 @@ public static class PositionExtensions
         Quantity = position.Quantity,
         EntryPrice = position.EntryPrice,
         Direction = Enum.Parse<Models.Direction>(position.Direction.ToString()),
-        OrderIds = [.. position.OrderIds],
+        OrderIds = [.. position.Orders.Select(i => i.OrderId)],
     };
 }

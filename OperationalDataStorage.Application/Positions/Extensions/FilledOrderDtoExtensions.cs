@@ -12,6 +12,6 @@ public static class FilledOrderDtoExtensions
         Quantity = dto.FilledQuantity,
         EntryPrice = dto.AverageFillPrice,
         Direction = Enum.Parse<Domain.Entities.Direction>(dto.Direction.ToString()),
-        OrderIds = [ dto.OrderId ]
+        Orders = [ new Order { OrderId = dto.OrderId } ]
     };
 }
