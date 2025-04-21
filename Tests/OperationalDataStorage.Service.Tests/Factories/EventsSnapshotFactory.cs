@@ -1,0 +1,62 @@
+﻿using OperationalDataStorage.Contracts.Events;
+using OperationalDataStorage.Contracts.Ohlcs;
+using OperationalDataStorage.Contracts.Positions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace OperationalDataStorage.Service.Tests.Factories;
+
+public static class EventsSnapshotFactory
+{
+    private static readonly JsonSerializerOptions jsonSerializerOptions;
+
+    static EventsSnapshotFactory()
+    {
+        jsonSerializerOptions = new JsonSerializerOptions();
+        jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }
+
+    public static EventsSnapshot GenerateEventsSnapshot(IEnumerable<Ohlc> ohlcs)
+    {
+        return new EventsSnapshot()
+        {
+            NewEvents = ohlcs.Select(CreateEvent),
+        };
+    }
+    
+    public static EventsSnapshot GenerateEventsSnapshot(IEnumerable<FilledOrder> filledOrders)
+    {
+        return new EventsSnapshot()
+        {
+            NewEvents = filledOrders.Select(CreateEvent),
+        };
+    }
+
+    private static EventDto CreateEvent(Ohlc ohlc)
+    {
+        return new EventDto()
+        {
+            Id = Guid.NewGuid().ToString(),
+            EventId = Guid.NewGuid(),
+            EventDateTime = DateTime.UtcNow,
+            EventType = EventType.OhlcReceived,
+            EventData = JsonSerializer.Serialize(ohlc, jsonSerializerOptions),
+            EntityType = EntityType.Ohlc,
+            EntityId = Guid.NewGuid().ToString(),
+        };
+    }
+
+    private static EventDto CreateEvent(FilledOrder filledOrder)
+    {
+        return new EventDto()
+        {
+            Id = Guid.NewGuid().ToString(),
+            EventId = Guid.NewGuid(),
+            EventDateTime = DateTime.UtcNow,
+            EventType = EventType.FilledOrderReceived,
+            EventData = JsonSerializer.Serialize(filledOrder, jsonSerializerOptions),
+            EntityType = EntityType.FilledOrder,
+            EntityId = Guid.NewGuid().ToString(),
+        };
+    }
+}
