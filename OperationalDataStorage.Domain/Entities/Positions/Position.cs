@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using OperationalDataStorage.Domain.Entities;
 using OperationalDataStorage.Domain.Entities.Abstractions;
 
 namespace OperationalDataStorage.Domain.Entities.Positions;
@@ -21,5 +20,5 @@ public class Position : IEntity
 
     public required Direction Direction { get; set; }
 
-    public required List<Order> Orders { get; set; }
+    public required HashSet<Guid> OrderIds { get; set; }
 }

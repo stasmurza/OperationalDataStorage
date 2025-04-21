@@ -16,11 +16,11 @@ public class ClassesMapping : Profile
         CreateMap<Contracts.Ohlcs.AddOhlcRequest, Application.Models.Ohlcs.AddOhlcInput>();
         CreateMap<Contracts.Ohlcs.Ohlc, Application.Models.Ohlcs.OhlcInputDto>();
         CreateMap<Contracts.Ohlcs.TimeInterval, Application.Models.Ohlcs.TimeInterval>();
+        CreateMap<Contracts.Positions.FilledOrder, Application.Models.Positions.FilledOrderDto>();
         CreateMap<Contracts.Positions.GetPositionsRequest, Application.Models.Positions.GetPositionsInput>();
 
         // Models
         CreateMap<Application.Models.Ohlcs.OhlcDto, Contracts.Ohlcs.Ohlc>();
-        CreateMap<Application.Models.Positions.OrderDto, Contracts.Positions.Order>();
         CreateMap<Application.Models.Positions.PositionDto, Contracts.Positions.Position>();
     }
 }

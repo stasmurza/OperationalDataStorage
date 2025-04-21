@@ -1,5 +1,6 @@
 ﻿using OperationalDataStorage.Contracts.Events;
 using OperationalDataStorage.Contracts.Ohlcs;
+using OperationalDataStorage.Contracts.Positions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -22,6 +23,14 @@ public static class EventsSnapshotFactory
             NewEvents = ohlcs.Select(CreateEvent),
         };
     }
+    
+    public static EventsSnapshot GenerateEventsSnapshot(IEnumerable<FilledOrder> filledOrders)
+    {
+        return new EventsSnapshot()
+        {
+            NewEvents = filledOrders.Select(CreateEvent),
+        };
+    }
 
     private static EventDto CreateEvent(Ohlc ohlc)
     {
@@ -33,6 +42,20 @@ public static class EventsSnapshotFactory
             EventType = EventType.OhlcReceived,
             EventData = JsonSerializer.Serialize(ohlc, jsonSerializerOptions),
             EntityType = EntityType.Ohlc,
+            EntityId = Guid.NewGuid().ToString(),
+        };
+    }
+
+    private static EventDto CreateEvent(FilledOrder filledOrder)
+    {
+        return new EventDto()
+        {
+            Id = Guid.NewGuid().ToString(),
+            EventId = Guid.NewGuid(),
+            EventDateTime = DateTime.UtcNow,
+            EventType = EventType.FilledOrderReceived,
+            EventData = JsonSerializer.Serialize(filledOrder, jsonSerializerOptions),
+            EntityType = EntityType.FilledOrder,
             EntityId = Guid.NewGuid().ToString(),
         };
     }

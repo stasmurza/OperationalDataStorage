@@ -29,7 +29,7 @@ public class PositionController(IMediator mediator, IMapper mapper) : Controller
         var output = await mediator.Send(input);
         return new GetPositionsResponse
         {
-            Positions = output.Positions.Select(mapper.Map<Contracts.Positions.Position>)
+            Positions = output.Positions.Select(mapper.Map<Position>)
         };
     }
 }

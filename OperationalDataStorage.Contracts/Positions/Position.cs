@@ -38,5 +38,5 @@ public class Position
     /// <summary>
     /// Own trades.
     /// </summary>
-    public required List<Order> Orders { get; set; }
+    public required List<Guid> OrderIds { get; set; }
 }

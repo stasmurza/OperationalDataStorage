@@ -133,8 +133,8 @@ public class EventsSnapshotConsumer : IDisposable
         {
             case EventType.OhlcReceived:
                 {
-                    var dtos = events.Select(Deserialize<Contracts.Ohlcs.Ohlc>);
-                    var models = dtos.Select(i => mapper.Map<Application.Models.Ohlcs.OhlcInputDto>(i));
+                    var contracts = events.Select(Deserialize<Contracts.Ohlcs.Ohlc>);
+                    var models = contracts.Select(i => mapper.Map<Application.Models.Ohlcs.OhlcInputDto>(i));
                     var input = new Application.Models.Ohlcs.AddOhlcsInput { Dtos = models };
                     await mediator.Send(input);
                 }
@@ -142,8 +142,9 @@ public class EventsSnapshotConsumer : IDisposable
 
             case EventType.FilledOrderReceived:
                 {
-                    var dtos = events.Select(Deserialize<Application.Models.Positions.FilledOrderDto>);
-                    var input = new Application.Models.Positions.AddFilledOrderInput { Dtos = dtos };
+                    var contracts = events.Select(Deserialize<Contracts.Positions.FilledOrder>);
+                    var models = contracts.Select(i => mapper.Map<Application.Models.Positions.FilledOrderDto>(i));
+                    var input = new Application.Models.Positions.AddFilledOrderInput { Dtos = models };
                     await mediator.Send(input);
                 }
                 break;

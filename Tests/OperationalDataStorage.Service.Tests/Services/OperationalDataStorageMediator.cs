@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OperationalDataStorage.Contracts.Ohlcs;
+using OperationalDataStorage.Contracts.Positions;
 using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq;
 using OperationalDataStorage.Infrastructure.Models.Settings.RabbitMq.Consumers.Subscriptions;
 using OperationalDataStorage.Service.Tests.Environments;
@@ -21,6 +22,7 @@ public sealed class OperationalDataStorageMediator : IDisposable
     private readonly MessageConsumer<Contracts.Events.EventsSnapshot> eventsSnapshotConsumer;
     private readonly MessagePublisher messagePublisher;
     private readonly JsonSerializerOptions jsonSerializerOptions;
+    private readonly HttpClient httpClient;
 
     public OperationalDataStorageMediator(TestEnvironment testEnvironment)
     {
@@ -46,6 +48,11 @@ public sealed class OperationalDataStorageMediator : IDisposable
         jsonSerializerOptions = new JsonSerializerOptions();
         jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         jsonSerializerOptions.PropertyNameCaseInsensitive = true;
+
+        httpClient = new()
+        {
+            BaseAddress = new Uri($"http://localhost:{TestEnvironment.OperationalDataStorageContainer.GetMappedPort(8080)}"),
+        };
     }
 
     public void Publish<T>(T message, string exchangeName, IEnumerable<string> routingKeys)
@@ -65,17 +72,20 @@ public sealed class OperationalDataStorageMediator : IDisposable
         TimeInterval granularity,
         CancellationToken cancellationToken)
     {
-        HttpClient httpClient = new()
-        {
-            BaseAddress = new Uri($"http://localhost:{TestEnvironment.OperationalDataStorageContainer.GetMappedPort(8080)}"),
-        };
-
-        //using HttpResponseMessage response = await httpClient.GetAsync($"/ohlc/{symbol}/{granularity}?{start.Date}/{end.Date}/", cancellationToken);
         using HttpResponseMessage response = await httpClient.GetAsync($"/ohlc/{symbol}/{granularity}?start={HttpUtility.UrlEncode(start.Date.ToString())}&end={HttpUtility.UrlEncode(end.Date.ToString())}", cancellationToken);
         response.EnsureSuccessStatusCode();
         var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
 
         return JsonSerializer.Deserialize<GetOhlcsResponse>(jsonResponse, jsonSerializerOptions);
+    }
+
+    public async Task<GetPositionsResponse?> GetPositionsAsync(string strategy, CancellationToken cancellationToken)
+    {
+        using HttpResponseMessage response = await httpClient.GetAsync($"/position?strategy={HttpUtility.UrlEncode(strategy)}", cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        return JsonSerializer.Deserialize<GetPositionsResponse>(jsonResponse, jsonSerializerOptions);
     }
 
     public void Dispose()
