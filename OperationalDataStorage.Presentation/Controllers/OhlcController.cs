@@ -1,10 +1,11 @@
 using AutoMapper;
-using OperationalDataStorage.Contracts.Ohlcs;
-using OperationalDataStorage.Application.Models.Ohlcs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using OperationalDataStorage.Application.Models.Ohlcs;
+using OperationalDataStorage.Contracts.Ohlcs;
 using System.Data;
+using System.Net;
+using System.Web;
 
 namespace OperationalDataStorage.Presentation.Controllers;
 
@@ -23,18 +24,18 @@ public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
     /// <param name="start" example="2009-06-15T13:45:00">Start date and time, UTC.</param>
     /// <param name="end" example="2009-06-16T13:45:00">End date and time, UTC.</param>
     /// <returns><see cref="GetOhlcsResponse"/></returns>
-    [HttpGet("{symbol}/{granularity}")]
+    [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOhlcsResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<GetOhlcsResponse> GetAsync(
-        [FromRoute] string symbol,
-        [FromRoute] Contracts.Ohlcs.TimeInterval granularity,
+        [FromQuery] string symbol,
+        [FromQuery] Contracts.Ohlcs.TimeInterval granularity,
         [FromQuery] DateTime start,
         [FromQuery] DateTime end)
     {
         var input = new GetOhlcsInput
         {
-            Symbol = symbol,
+            Symbol = HttpUtility.UrlDecode(symbol),
             Start = start,
             End = end,
             Granularity = mapper.Map<Application.Models.Ohlcs.TimeInterval>(granularity)
