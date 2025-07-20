@@ -43,7 +43,7 @@ public class OhlcAggregator()
     {
         Models.Ohlcs.TimeInterval.Days1 => startTime.Date,
         Models.Ohlcs.TimeInterval.Hours1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0),
-        Models.Ohlcs.TimeInterval.Minutes1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, 0, 0),
+        Models.Ohlcs.TimeInterval.Minutes1 => new DateTime(startTime.Year, startTime.Month, startTime.Day, startTime.Hour, startTime.Minute, 0),
         _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), $"Not expected direction value: {timeInterval}"),
     };
     

@@ -84,8 +84,8 @@ public class EventsSnapshotConsumer : IDisposable
             var routingKey = eventArgs.RoutingKey;
             var eventsSnapshort = JsonSerializer.Deserialize<EventsSnapshot>(message, jsonSerializerOptions);
             if (eventsSnapshort is null) throw new NullReferenceException(nameof(eventsSnapshort));
+            LogEvents(eventsSnapshort.NewEvents);
             if (!eventsSnapshort.NewEvents.Any()) return;
-            LogEvents(eventsSnapshort.NewEvents.Select(i => JsonSerializer.Serialize(i, jsonSerializerOptions)));
             var dtosByEventType = eventsSnapshort.NewEvents.GroupBy(e => e.EventType);
             foreach (var group in dtosByEventType)
             {
@@ -96,7 +96,7 @@ public class EventsSnapshotConsumer : IDisposable
         }
         catch (Exception exception)
         {
-            logger.LogError("{exceptionMessage}", exception.Message);
+            logger.LogError(exception, "{exceptionMessage}", exception.Message);
             throw;
         }
     }
@@ -164,7 +164,35 @@ public class EventsSnapshotConsumer : IDisposable
     {
         foreach(var @event in events)
         {
-            logger.LogInformation("{event} received", @event);
+            logger.LogDebug("{event} received", @event);
+        }
+    }
+    
+    private void LogEvents(IEnumerable<EventDto> events)
+    {
+        if (events == null || !events.Any())
+        {
+            logger.LogDebug("Received empty events snapshot");
+            return;
+        }
+
+        foreach (var @event in events)
+        {
+            var contract = @event.EventType switch
+            {
+                EventType.OhlcReceived => JsonSerializer.Serialize(Deserialize<Contracts.Ohlcs.Ohlc>(@event.EventData), jsonSerializerOptions),
+                EventType.FilledOrderReceived => JsonSerializer.Serialize(Deserialize<Contracts.Positions.FilledOrder>(@event.EventData), jsonSerializerOptions),
+                _ => @event.EventData,
+            };
+
+            logger.LogDebug("Event received, Id: {Id}, EventId: {EventId}, EventDateTime:{EventDateTime}, EventType: {EventType}, EntityType: {EntityType}, EntityId:{EntityId}, EventData:{EventData}",
+                @event.Id,
+                @event.EventId,
+                @event.EventDateTime,
+                @event.EventType,
+                @event.EntityType,
+                @event.EntityId,
+                contract);
         }
     }
 

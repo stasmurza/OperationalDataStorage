@@ -23,7 +23,7 @@ public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> 
         }
         catch (Exception exception)
         {
-            logger.LogError("{errorMessage}", exception.Message);
+            logger.LogError(exception, "{errorMessage}", exception.Message);
             throw;
         }
         finally
@@ -43,7 +43,7 @@ public class AddOhlcsHandler(ILogger<AddOhlcsHandler> logger, IRepository<Ohlc> 
             var entity = await ohlcRepository.FirstOrDefaultAsync(i => i.StartTime == intervalStart && i.EndTime == intervalEnd && i.Interval == ohlc.Interval && i.Symbol == ohlc.Symbol);
             entity?.Apply(ohlc);
             if (entity is null) await ohlcRepository.CreateAsync(ohlc);
-            else await ohlcRepository.UpdateAsync(ohlc);
+            else await ohlcRepository.UpdateAsync(entity);
         }
     }
 }
