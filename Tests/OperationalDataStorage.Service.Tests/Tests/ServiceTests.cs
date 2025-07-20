@@ -39,7 +39,7 @@ public class ServiceTests
         var ohlc1 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1000);
         var ohlc2 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 10001);
         var ohlc3 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1000);
-        var eventsSnapshot = EventsSnapshotFactory.GenerateEventsSnapshot([ohlc1, ohlc2]);
+        var eventsSnapshot = EventsSnapshotFactory.GenerateEventsSnapshot([ohlc1, ohlc2, ohlc3]);
 
         // Act.
         mediator.Publish(eventsSnapshot, mediator.EventsSnapshotSettings.ExchangeName, mediator.EventsSnapshotSettings.RoutingKeys);
@@ -63,6 +63,54 @@ public class ServiceTests
         ohlc.StartTime.Should().Be(startInterval);
         ohlc.EndTime.Should().Be(endInterval);
         ohlc.Volume.Should().Be(ohlc2.Volume);
+    }
+
+    /// <summary>
+    /// Ohlcs are out of order. The message with biggest volume is returned.
+    /// </summary>
+    [Test]
+    [TestCase("PI_XBTUSD")]
+    public async Task OhlcsUpdated_ApiReturnsBiggestVolumeOhlc(string symbol)
+    {
+        // Arrange.
+        await using var testEnvironment = new TestEnvironment();
+        var cancellationTokenSource = new CancellationTokenSource(testEnvironment.TestsSettings.ArrangeTimeoutMs);
+        await testEnvironment.SetupAsync(cancellationTokenSource.Token);
+        using var mediator = new OperationalDataStorageMediator(testEnvironment);
+        var startInterval = IntervalDateTimeFactory.GetStartDateTime(Application.Models.Ohlcs.TimeInterval.Days1, DateTime.UtcNow);
+        var endInterval = IntervalDateTimeFactory.GetEndDateTime(Application.Models.Ohlcs.TimeInterval.Days1, startInterval);
+        var ohlc1 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1000);
+        var ohlc2 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1000);
+        var eventsSnapshot1 = EventsSnapshotFactory.GenerateEventsSnapshot([ohlc1, ohlc2]);
+
+        var ohlc3 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1001);
+        var ohlc4 = OhlcFactory.CreateOhlc(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, 10000, 100000, 1002);
+        var eventsSnapshot2 = EventsSnapshotFactory.GenerateEventsSnapshot([ohlc3, ohlc4]);
+
+        // Act.
+        mediator.Publish(eventsSnapshot1, mediator.EventsSnapshotSettings.ExchangeName, mediator.EventsSnapshotSettings.RoutingKeys);
+        await Task.Delay(1000); // Wait for messages to be processed.
+        mediator.Publish(eventsSnapshot2, mediator.EventsSnapshotSettings.ExchangeName, mediator.EventsSnapshotSettings.RoutingKeys);
+        await Task.Delay(1000); // Wait for messages to be processed.
+        cancellationTokenSource = new CancellationTokenSource(testEnvironment.TestsSettings.ActTimeoutMs);
+        var receivedOhlc = await mediator.GetOhlcsAsync(symbol, startInterval, endInterval, Contracts.Ohlcs.TimeInterval.Days1, cancellationTokenSource.Token);
+        await testEnvironment.StopAsync(CancellationToken.None);
+
+        // Assert.
+        receivedOhlc.Should().NotBeNull();
+        receivedOhlc.Ohlcs.Should().NotBeNull();
+        receivedOhlc.Ohlcs.Should().HaveCount(1);
+        var ohlc = receivedOhlc.Ohlcs.First();
+
+        ohlc.Should().NotBeNull();
+        ohlc.Symbol.Should().Be(symbol);
+        ohlc.Low.Should().Be(ohlc4.Low);
+        ohlc.High.Should().Be(ohlc4.High);
+        ohlc.Open.Should().Be(ohlc4.Open);
+        ohlc.Close.Should().Be(ohlc4.Close);
+        ohlc.StartTime.Should().Be(startInterval);
+        ohlc.EndTime.Should().Be(endInterval);
+        ohlc.Volume.Should().Be(ohlc4.Volume);
     }
 
     /// <summary>
