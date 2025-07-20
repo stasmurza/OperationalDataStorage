@@ -8,7 +8,7 @@ public static class IntervalDateTimeFactory
     {
         TimeInterval.Days1 => dateTime.Date,
         TimeInterval.Hours1 => new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0),
-        TimeInterval.Minutes1 => new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0),
+        TimeInterval.Minutes1 => new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, 0),
         _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), $"Not expected direction value: {timeInterval}"),
     };
 
