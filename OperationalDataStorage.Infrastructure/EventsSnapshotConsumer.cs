@@ -159,14 +159,6 @@ public class EventsSnapshotConsumer : IDisposable
         var dto = JsonSerializer.Deserialize<T>(eventData, jsonSerializerOptions);
         return dto ?? throw new NullReferenceException(nameof(dto));
     }
-
-    private void LogEvents(IEnumerable<string> events)
-    {
-        foreach(var @event in events)
-        {
-            logger.LogDebug("{event} received", @event);
-        }
-    }
     
     private void LogEvents(IEnumerable<EventDto> events)
     {

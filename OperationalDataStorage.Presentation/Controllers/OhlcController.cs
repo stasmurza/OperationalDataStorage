@@ -1,20 +1,35 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using OperationalDataStorage.Application.Models.Ohlcs;
 using OperationalDataStorage.Contracts.Ohlcs;
 using System.Data;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Web;
 
 namespace OperationalDataStorage.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
+public class OhlcController : ControllerBase
 {
-    private readonly IMediator mediator = mediator;
-    private readonly IMapper mapper = mapper;
+    private readonly ILogger<OhlcController> logger;
+    private readonly IMediator mediator;
+    private readonly IMapper mapper;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
+
+    public OhlcController(ILogger<OhlcController> logger, IMediator mediator, IMapper mapper)
+    {
+        this.logger = logger;
+        this.mediator = mediator;
+        this.mapper = mapper;
+
+        jsonSerializerOptions = new JsonSerializerOptions();
+        jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }
 
     /// <summary>
     /// Returns ohlcs.
@@ -40,6 +55,7 @@ public class OhlcController(IMediator mediator, IMapper mapper) : ControllerBase
             End = end,
             Granularity = mapper.Map<Application.Models.Ohlcs.TimeInterval>(granularity)
         };
+        logger.LogDebug("Get ohlcs request received: {input}", JsonSerializer.Serialize(input, jsonSerializerOptions));
         var output = await mediator.Send(input);
         return new GetOhlcsResponse
         {
