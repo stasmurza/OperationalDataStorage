@@ -177,7 +177,7 @@ public class EventsSnapshotConsumer : IDisposable
                 _ => @event.EventData,
             };
 
-            logger.LogDebug("Event received, Id: {Id}, EventId: {EventId}, EventDateTime:{EventDateTime}, EventType: {EventType}, EntityType: {EntityType}, EntityId:{EntityId}, EventData:{EventData}",
+            logger.LogInformation("Event received, Id: {Id}, EventId: {EventId}, EventDateTime:{EventDateTime}, EventType: {EventType}, EntityType: {EntityType}, EntityId:{EntityId}, EventData:{EventData}",
                 @event.Id,
                 @event.EventId,
                 @event.EventDateTime,
