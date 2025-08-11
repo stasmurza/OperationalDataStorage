@@ -49,7 +49,7 @@ public sealed class MessageConsumer<T> : IMessageConsumer
             autoDelete: false);
 
         var queueDeclareResult = channel.QueueDeclare(
-            durable: false,
+            durable: true,
             autoDelete: true,
             exclusive: false);
 
