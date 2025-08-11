@@ -42,8 +42,17 @@ public sealed class MessageConsumer<T> : IMessageConsumer
 
     public void Subscribe(string exchangeName, IEnumerable<string> routingKeys)
     {
-        channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, durable: true, autoDelete: false);
-        var queueDeclareResult = channel.QueueDeclare(durable: false, autoDelete: true);
+        channel.ExchangeDeclare(
+            exchangeName,
+            ExchangeType.Direct,
+            durable: true,
+            autoDelete: false);
+
+        var queueDeclareResult = channel.QueueDeclare(
+            durable: false,
+            autoDelete: true,
+            exclusive: false);
+
         string queueName = queueDeclareResult.QueueName;
         foreach (var bindingKey in routingKeys)
         {
@@ -55,7 +64,11 @@ public sealed class MessageConsumer<T> : IMessageConsumer
 
         var consumer = new EventingBasicConsumer(channel);
         consumer.Received += Consumer_Received;
-        channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+        channel.BasicConsume(
+            queue: queueName,
+            autoAck: true,
+            consumer: consumer,
+            exclusive: false);
     }
 
     public async IAsyncEnumerable<T> GetDtosAsync([EnumeratorCancellation] CancellationToken cancellationToken)

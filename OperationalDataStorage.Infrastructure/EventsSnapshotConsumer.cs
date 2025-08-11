@@ -55,8 +55,18 @@ public class EventsSnapshotConsumer : IDisposable
 
         connection = factory.CreateConnection();
         channel = connection.CreateModel();
-        channel.ExchangeDeclare(eventsSnapshotSettings.ExchangeName, ExchangeType.Direct, durable: true, autoDelete: false);
-        channel.QueueDeclare(eventsSnapshotSettings.QueueName, durable: true, autoDelete: false);
+        channel.ExchangeDeclare(
+            eventsSnapshotSettings.ExchangeName,
+            ExchangeType.Direct,
+            durable: true,
+            autoDelete: false);
+
+        channel.QueueDeclare(
+            eventsSnapshotSettings.QueueName,
+            durable: true,
+            autoDelete: false,
+            exclusive: false);
+
         foreach (var bindingKey in this.eventsSnapshotSettings.RoutingKeys)
         {
             channel.QueueBind(
@@ -69,10 +79,12 @@ public class EventsSnapshotConsumer : IDisposable
         jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         var consumer = new EventingBasicConsumer(channel);
         consumer.Received += Consumer_Received;
+        
         channel.BasicConsume(
             queue: eventsSnapshotSettings.QueueName,
             autoAck: false,
-            consumer: consumer);
+            consumer: consumer,
+            exclusive: false);
     }
 
     private void Consumer_Received(object? sender, BasicDeliverEventArgs eventArgs)
