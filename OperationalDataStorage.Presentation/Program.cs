@@ -16,11 +16,8 @@ app.MapHealthChecks("/healthz");
 app.Services.AddLifetimeLogger();
 app.Services.ValidateSettings();
 app.Services.LogSettings();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
